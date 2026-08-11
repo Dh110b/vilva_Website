@@ -1,0 +1,63 @@
+import { NextRequest, NextResponse } from "next/server";
+import { createEnquiry, getEnquiries, getProduct } from "@/lib/data";
+import { ADMIN_COOKIE_NAME, isValidSessionToken } from "@/lib/auth";
+import { sendEnquiryEmail } from "@/lib/mail";
+
+export async function GET(req: NextRequest) {
+  const token = req.cookies.get(ADMIN_COOKIE_NAME)?.value;
+  if (!isValidSessionToken(token)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  return NextResponse.json(getEnquiries());
+}
+
+export async function POST(req: NextRequest) {
+  const body = await req.json();
+  const {
+    productId,
+    name,
+    email,
+    phone,
+    numberOfTanks,
+    address,
+    pincode,
+    sumpOrBoreCapacity,
+    motorPhaseType,
+    motorType,
+    starterType,
+    numberOfMotors,
+    waterSource,
+    message,
+  } = body;
+
+  if (!productId || !name || !email || !phone || !address || !pincode) {
+    return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+  }
+
+  const product = getProduct(productId);
+  if (!product) {
+    return NextResponse.json({ error: "Product not found" }, { status: 404 });
+  }
+
+  const enquiry = createEnquiry({
+    productId,
+    productName: product.name,
+    name,
+    email,
+    phone,
+    numberOfTanks,
+    address,
+    pincode,
+    sumpOrBoreCapacity,
+    motorPhaseType,
+    motorType,
+    starterType,
+    numberOfMotors,
+    waterSource,
+    message,
+  });
+
+  await sendEnquiryEmail(enquiry);
+
+  return NextResponse.json(enquiry, { status: 201 });
+}
