@@ -4,12 +4,14 @@ import { HomeHero } from "@/components/home-hero";
 import { ElasticGallery } from "@/components/ui/elastic-gallery";
 import { Button } from "@/components/ui/button";
 import { ArrowRightIcon, CheckCircle2, XCircle } from "lucide-react";
+import { NEXT_PUBLIC_ADMIN_EXAMPLE } from "@/lib/constance";
 
 const trustItems = [
   "24 Months Warranty*",
   "Made in India",
   "Single & Three Phase Compatible",
   "Submersible & Monoblock Pump Compatible",
+  NEXT_PUBLIC_ADMIN_EXAMPLE
 ];
 
 const problems = [
