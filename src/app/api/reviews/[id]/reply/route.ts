@@ -17,7 +17,7 @@ export async function POST(
   const token = req.cookies.get(ADMIN_COOKIE_NAME)?.value;
   const isOwner = isValidSessionToken(token);
 
-  const reply = addReviewReply(id, { name, message, isOwner });
+  const reply = await addReviewReply(id, { name, message, isOwner });
   if (!reply) {
     return NextResponse.json({ error: "Review not found" }, { status: 404 });
   }

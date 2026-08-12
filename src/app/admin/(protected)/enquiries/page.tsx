@@ -1,8 +1,8 @@
 import { getEnquiries } from "@/lib/data";
 import { AdminEnquiriesBrowser } from "@/components/admin-enquiries-browser";
 
-export default function AdminEnquiriesPage() {
-  const enquiries = getEnquiries();
+export default async function AdminEnquiriesPage() {
+  const enquiries = await getEnquiries();
 
   return (
     <div>

@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
   if (!productId) {
     return NextResponse.json({ error: "Missing productId" }, { status: 400 });
   }
-  return NextResponse.json(getReviews(productId));
+  return NextResponse.json(await getReviews(productId));
 }
 
 export async function POST(req: NextRequest) {
@@ -22,12 +22,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Rating must be between 1 and 5" }, { status: 400 });
   }
 
-  const product = getProduct(productId);
+  const product = await getProduct(productId);
   if (!product) {
     return NextResponse.json({ error: "Product not found" }, { status: 404 });
   }
 
-  const review = createReview({
+  const review = await createReview({
     productId,
     name,
     rating: ratingNum,

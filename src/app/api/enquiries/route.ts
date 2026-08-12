@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
   if (!isValidSessionToken(token)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  return NextResponse.json(getEnquiries());
+  return NextResponse.json(await getEnquiries());
 }
 
 export async function POST(req: NextRequest) {
@@ -37,12 +37,12 @@ export async function POST(req: NextRequest) {
   }
 
   const isCustom = productId === "custom";
-  const product = isCustom ? undefined : getProduct(productId);
+  const product = isCustom ? undefined : await getProduct(productId);
   if (!isCustom && !product) {
     return NextResponse.json({ error: "Product not found" }, { status: 404 });
   }
 
-  const enquiry = createEnquiry({
+  const enquiry = await createEnquiry({
     productId,
     productName: isCustom ? "Custom Water Level Controller" : product!.name,
     name,

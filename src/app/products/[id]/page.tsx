@@ -11,9 +11,9 @@ export default async function ProductPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const product = getProduct(id);
+  const product = await getProduct(id);
   if (!product) notFound();
-  const reviews = getReviews(product.id);
+  const reviews = await getReviews(product.id);
   const cookieStore = await cookies();
   const isAuthed = isValidSessionToken(cookieStore.get(ADMIN_COOKIE_NAME)?.value);
 

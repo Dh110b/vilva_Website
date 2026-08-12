@@ -4,14 +4,12 @@ import { HomeHero } from "@/components/home-hero";
 import { ElasticGallery } from "@/components/ui/elastic-gallery";
 import { Button } from "@/components/ui/button";
 import { ArrowRightIcon, CheckCircle2, XCircle } from "lucide-react";
-import { NEXT_PUBLIC_ADMIN_EXAMPLE } from "@/lib/constance";
 
 const trustItems = [
   "24 Months Warranty*",
   "Made in India",
   "Single & Three Phase Compatible",
   "Submersible & Monoblock Pump Compatible",
-  NEXT_PUBLIC_ADMIN_EXAMPLE
 ];
 
 const problems = [
@@ -24,8 +22,8 @@ const problems = [
 const stopItems = ["Tank overflow", "Dry running of your motor", "Motor running in high/low voltage"];
 const saveItems = ["Time", "Water", "Electricity", "Manpower & energy", "Your bore/sump motor pump"];
 
-export default function Home() {
-  const featuredProducts = getProducts().slice(0, 8);
+export default async function Home() {
+  const featuredProducts = (await getProducts()).slice(0, 8);
 
   return (
     <div className="flex w-full flex-col">

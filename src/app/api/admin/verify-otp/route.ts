@@ -3,7 +3,7 @@ import { ADMIN_COOKIE_NAME, createSessionToken, verifyOtp } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   const { otp } = await req.json();
-  if (!otp || !verifyOtp(otp)) {
+  if (!otp || !(await verifyOtp(otp))) {
     return NextResponse.json({ error: "Invalid or expired code" }, { status: 401 });
   }
   const res = NextResponse.json({ ok: true });

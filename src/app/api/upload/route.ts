@@ -1,13 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
 import { ADMIN_COOKIE_NAME, isValidSessionToken } from "@/lib/auth";
-
-const uploadDir = path.join(process.cwd(), "public", "uploads");
+import { getSupabaseAdmin, UPLOADS_BUCKET } from "@/lib/supabase";
 
 function safeExt(name: string) {
-  const ext = path.extname(name).toLowerCase();
-  return /^\.[a-z0-9]{1,10}$/.test(ext) ? ext : "";
+  const match = name.toLowerCase().match(/\.[a-z0-9]{1,10}$/);
+  return match ? match[0] : "";
 }
 
 export async function POST(req: NextRequest) {
@@ -22,12 +19,23 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No file provided" }, { status: 400 });
   }
 
-  if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
-
   const ext = safeExt(file.name);
   const filename = `${crypto.randomUUID()}${ext}`;
   const buffer = Buffer.from(await file.arrayBuffer());
-  fs.writeFileSync(path.join(uploadDir, filename), buffer);
 
-  return NextResponse.json({ url: `/uploads/${filename}` });
+  const supabase = getSupabaseAdmin();
+  const { error } = await supabase.storage
+    .from(UPLOADS_BUCKET)
+    .upload(filename, buffer, {
+      contentType: file.type || "application/octet-stream",
+      upsert: false,
+    });
+
+  if (error) {
+    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
+  }
+
+  const { data } = supabase.storage.from(UPLOADS_BUCKET).getPublicUrl(filename);
+
+  return NextResponse.json({ url: data.publicUrl });
 }

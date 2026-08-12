@@ -5,9 +5,9 @@ export const metadata = {
   title: "Products - Vilva",
 };
 
-export default function ProductsPage() {
-  const products = getProducts();
-  const ratings = getProductRatings();
+export default async function ProductsPage() {
+  const products = await getProducts();
+  const ratings = await getProductRatings();
   const productsWithRating = products.map((product) => ({
     ...product,
     avgRating: ratings[product.id]?.average ?? 0,
