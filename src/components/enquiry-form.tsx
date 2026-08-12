@@ -13,15 +13,11 @@ import {
   DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import Link from "next/link";
 import { toast } from "sonner";
+import { useOptionLists } from "@/hooks/use-option-lists";
+import { useEnquiryFieldConfig } from "@/hooks/use-enquiry-field-config";
+import { EnquiryFormFields } from "@/components/enquiry-form-fields";
 
 const initialForm = {
   name: "",
@@ -36,6 +32,8 @@ const initialForm = {
   starterType: "",
   numberOfMotors: "",
   waterSource: "",
+  timerType: "",
+  unitType: "",
   message: "",
 };
 
@@ -43,6 +41,8 @@ export function EnquiryForm({ productId, productName }: { productId: string; pro
   const [open, setOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState(initialForm);
+  const { lists: optionLists } = useOptionLists();
+  const { config: fieldConfig } = useEnquiryFieldConfig();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -67,7 +67,7 @@ export function EnquiryForm({ productId, productName }: { productId: string; pro
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger render={<Button size="lg" />}>Send Enquiry</DialogTrigger>
-      <DialogContent className="max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-h-[90vh] overflow-y-auto border border-white/30 bg-white/10 backdrop-blur-md dark:border-white/10 dark:bg-white/5">
         <DialogHeader>
           <DialogTitle>Enquire about {productName}</DialogTitle>
         </DialogHeader>
@@ -98,18 +98,6 @@ export function EnquiryForm({ productId, productName }: { productId: string; pro
               required
               value={form.phone}
               onChange={(e) => setForm({ ...form, phone: e.target.value })}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="numberOfTanks">No. of Overhead Tanks (optional)</Label>
-            <Input
-              id="numberOfTanks"
-              type="number"
-              min="1"
-              placeholder="e.g. 1"
-              value={form.numberOfTanks}
-              onChange={(e) => setForm({ ...form, numberOfTanks: e.target.value })}
             />
           </div>
 
@@ -151,90 +139,12 @@ export function EnquiryForm({ productId, productName }: { productId: string; pro
               </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="sumpOrBoreCapacity">Sump / Motor Capacity</Label>
-                <Input
-                  id="sumpOrBoreCapacity"
-                  placeholder="e.g. 1 HP"
-                  value={form.sumpOrBoreCapacity}
-                  onChange={(e) => setForm({ ...form, sumpOrBoreCapacity: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="numberOfMotors">No. of Motors</Label>
-                <Input
-                  id="numberOfMotors"
-                  type="number"
-                  min="1"
-                  placeholder="e.g. 1"
-                  value={form.numberOfMotors}
-                  onChange={(e) => setForm({ ...form, numberOfMotors: e.target.value })}
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="motorPhaseType">Motor Phase Type</Label>
-                <Select
-                  value={form.motorPhaseType}
-                  onValueChange={(value) => setForm({ ...form, motorPhaseType: value ?? "" })}
-                >
-                  <SelectTrigger id="motorPhaseType" className="w-full">
-                    <SelectValue placeholder="Select phase" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Single Phase">Single Phase</SelectItem>
-                    <SelectItem value="Three Phase">Three Phase</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="starterType">Starter Type</Label>
-                <Select
-                  value={form.starterType}
-                  onValueChange={(value) => setForm({ ...form, starterType: value ?? "" })}
-                >
-                  <SelectTrigger id="starterType" className="w-full">
-                    <SelectValue placeholder="Select starter" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="DOL">DOL</SelectItem>
-                    <SelectItem value="Star-Delta">Star-Delta</SelectItem>
-                    <SelectItem value="Not sure">Not sure</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="motorType">Motor Type</Label>
-                <Input
-                  id="motorType"
-                  placeholder="e.g. Submersible, Monoblock"
-                  value={form.motorType}
-                  onChange={(e) => setForm({ ...form, motorType: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="waterSource">Sump / Bore / Both</Label>
-                <Select
-                  value={form.waterSource}
-                  onValueChange={(value) => setForm({ ...form, waterSource: value ?? "" })}
-                >
-                  <SelectTrigger id="waterSource" className="w-full">
-                    <SelectValue placeholder="Select source" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Sump">Sump</SelectItem>
-                    <SelectItem value="Bore">Bore</SelectItem>
-                    <SelectItem value="Both">Both</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
+            <EnquiryFormFields
+              config={fieldConfig}
+              form={form}
+              setForm={setForm}
+              optionLists={optionLists}
+            />
           </div>
 
           <div className="space-y-2">

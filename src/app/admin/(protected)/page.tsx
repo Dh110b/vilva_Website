@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { getProducts } from "@/lib/data";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { DeleteProductButton } from "@/components/delete-product-button";
+import { AdminProductBrowser } from "@/components/admin-product-browser";
 
 export default function AdminProductsPage() {
   const products = getProducts();
@@ -19,36 +18,7 @@ export default function AdminProductsPage() {
       {products.length === 0 ? (
         <p className="text-muted-foreground">No products yet. Add your first one.</p>
       ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead>Demo</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {products.map((product) => (
-              <TableRow key={product.id}>
-                <TableCell className="font-medium">{product.name}</TableCell>
-                <TableCell>₹{product.price.toLocaleString("en-IN")}</TableCell>
-                <TableCell>{product.demoUrl ? "Yes" : "-"}</TableCell>
-                <TableCell className="text-right space-x-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    render={<Link href={`/admin/products/${product.id}`} />}
-                    nativeButton={false}
-                  >
-                    Edit
-                  </Button>
-                  <DeleteProductButton id={product.id} />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <AdminProductBrowser products={products} />
       )}
     </div>
   );

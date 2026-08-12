@@ -171,12 +171,89 @@
   }
 }
 
+@keyframes bubble-rise {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.7;
+  }
+  90% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate(var(--drift, 16px), -110vh);
+    opacity: 0;
+  }
+}
+
+@keyframes caustic-drift {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate(3%, -4%) rotate(4deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+}
+
+@keyframes caustic-drift-slow {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translate(-4%, 3%) rotate(-3deg) scale(1.05);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+}
+
+@keyframes wave-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-bubble-rise {
+  animation-name: bubble-rise;
+  animation-timing-function: ease-in;
+  animation-iteration-count: infinite;
+}
+
+.animate-caustic-drift {
+  animation: caustic-drift 18s ease-in-out infinite;
+}
+
+.animate-caustic-drift-slow {
+  animation: caustic-drift-slow 26s ease-in-out infinite;
+}
+
+.animate-wave-scroll {
+  animation: wave-scroll 22s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-bubble-rise,
+  .animate-caustic-drift,
+  .animate-caustic-drift-slow,
+  .animate-wave-scroll {
+    animation: none;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-transparent text-foreground;
   }
   html {
     @apply font-sans;

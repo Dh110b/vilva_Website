@@ -1,5 +1,14 @@
 import fs from "fs";
 import path from "path";
+import { OPTION_CATEGORIES, type OptionCategory } from "@/lib/motor-options";
+import { ENQUIRY_STATUSES, type EnquiryStatus } from "@/lib/enquiry-status";
+import {
+  defaultEnquiryFieldConfig,
+  normalizeEnquiryFieldConfig,
+  type EnquiryFieldConfig,
+} from "@/lib/enquiry-form-fields";
+
+export { ENQUIRY_STATUSES, type EnquiryStatus };
 
 export type Product = {
   id: string;
@@ -8,6 +17,15 @@ export type Product = {
   price: number;
   images: string[];
   demoUrl?: string;
+  sumpOrBoreCapacity?: string;
+  motorPhaseType?: string;
+  motorType?: string;
+  starterType?: string;
+  numberOfMotors?: string;
+  waterSource?: string;
+  numberOfTanks?: string;
+  timerType?: string;
+  unitType?: string;
   createdAt: string;
 };
 
@@ -46,7 +64,10 @@ export type Enquiry = {
   starterType?: string;
   numberOfMotors?: string;
   waterSource?: string;
+  timerType?: string;
+  unitType?: string;
   message?: string;
+  status: EnquiryStatus;
   createdAt: string;
 };
 
@@ -54,6 +75,8 @@ const dataDir = path.join(process.cwd(), "data");
 const productsFile = path.join(dataDir, "products.json");
 const enquiriesFile = path.join(dataDir, "enquiries.json");
 const reviewsFile = path.join(dataDir, "reviews.json");
+const optionsFile = path.join(dataDir, "options.json");
+const enquiryFieldsFile = path.join(dataDir, "enquiry-form-fields.json");
 
 function ensureFile(file: string) {
   if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
@@ -117,21 +140,36 @@ export function deleteProduct(id: string): boolean {
 }
 
 export function getEnquiries(): Enquiry[] {
-  return readJson<Enquiry>(enquiriesFile).sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  );
+  return readJson<Enquiry>(enquiriesFile)
+    .map((e) => ({ ...e, status: e.status ?? "New" }))
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 }
 
-export function createEnquiry(input: Omit<Enquiry, "id" | "createdAt">): Enquiry {
+export function createEnquiry(
+  input: Omit<Enquiry, "id" | "createdAt" | "status">
+): Enquiry {
   const enquiries = readJson<Enquiry>(enquiriesFile);
   const enquiry: Enquiry = {
     ...input,
+    status: "New",
     id: crypto.randomUUID(),
     createdAt: new Date().toISOString(),
   };
   enquiries.push(enquiry);
   writeJson(enquiriesFile, enquiries);
   return enquiry;
+}
+
+export function updateEnquiryStatus(
+  id: string,
+  status: EnquiryStatus
+): Enquiry | undefined {
+  const enquiries = readJson<Enquiry>(enquiriesFile);
+  const idx = enquiries.findIndex((e) => e.id === id);
+  if (idx === -1) return undefined;
+  enquiries[idx] = { ...enquiries[idx], status };
+  writeJson(enquiriesFile, enquiries);
+  return enquiries[idx];
 }
 
 export function getReviews(productId: string): Review[] {
@@ -191,4 +229,83 @@ export function addReviewReply(
   reviews[idx] = { ...reviews[idx], replies: [...existingReplies, reply] };
   writeJson(reviewsFile, reviews);
   return reply;
+}
+
+export type OptionLists = Record<OptionCategory, string[]>;
+
+function defaultOptionLists(): OptionLists {
+  const result = {} as OptionLists;
+  for (const key of Object.keys(OPTION_CATEGORIES) as OptionCategory[]) {
+    result[key] = [...OPTION_CATEGORIES[key].defaults];
+  }
+  return result;
+}
+
+function writeOptionLists(lists: OptionLists) {
+  if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+  fs.writeFileSync(optionsFile, JSON.stringify(lists, null, 2), "utf-8");
+}
+
+export function getOptionLists(): OptionLists {
+  if (!fs.existsSync(optionsFile)) {
+    const defaults = defaultOptionLists();
+    writeOptionLists(defaults);
+    return defaults;
+  }
+  const raw = fs.readFileSync(optionsFile, "utf-8");
+  let stored: Partial<OptionLists> = {};
+  try {
+    stored = JSON.parse(raw);
+  } catch {
+    stored = {};
+  }
+  const defaults = defaultOptionLists();
+  const merged = { ...defaults, ...stored } as OptionLists;
+  for (const key of Object.keys(OPTION_CATEGORIES) as OptionCategory[]) {
+    if (!Array.isArray(merged[key]) || merged[key].length === 0) {
+      merged[key] = defaults[key];
+    }
+  }
+  return merged;
+}
+
+export function addOption(category: OptionCategory, value: string): OptionLists {
+  const trimmed = value.trim();
+  const lists = getOptionLists();
+  if (trimmed && !lists[category].includes(trimmed)) {
+    lists[category] = [...lists[category], trimmed];
+    writeOptionLists(lists);
+  }
+  return lists;
+}
+
+export function deleteOption(category: OptionCategory, value: string): OptionLists {
+  const lists = getOptionLists();
+  lists[category] = lists[category].filter((v) => v !== value);
+  writeOptionLists(lists);
+  return lists;
+}
+
+export function setOptionList(category: OptionCategory, values: string[]): OptionLists {
+  const lists = getOptionLists();
+  lists[category] = Array.from(new Set(values.map((v) => v.trim()).filter(Boolean)));
+  writeOptionLists(lists);
+  return lists;
+}
+
+export function getEnquiryFieldConfig(): EnquiryFieldConfig[] {
+  if (!fs.existsSync(enquiryFieldsFile)) return defaultEnquiryFieldConfig();
+  try {
+    const raw = fs.readFileSync(enquiryFieldsFile, "utf-8");
+    return normalizeEnquiryFieldConfig(JSON.parse(raw));
+  } catch {
+    return defaultEnquiryFieldConfig();
+  }
+}
+
+export function saveEnquiryFieldConfig(config: EnquiryFieldConfig[]): EnquiryFieldConfig[] {
+  const normalized = normalizeEnquiryFieldConfig(config);
+  if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+  fs.writeFileSync(enquiryFieldsFile, JSON.stringify(normalized, null, 2), "utf-8");
+  return normalized;
 }

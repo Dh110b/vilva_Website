@@ -27,6 +27,8 @@ export async function POST(req: NextRequest) {
     starterType,
     numberOfMotors,
     waterSource,
+    timerType,
+    unitType,
     message,
   } = body;
 
@@ -34,14 +36,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
   }
 
-  const product = getProduct(productId);
-  if (!product) {
+  const isCustom = productId === "custom";
+  const product = isCustom ? undefined : getProduct(productId);
+  if (!isCustom && !product) {
     return NextResponse.json({ error: "Product not found" }, { status: 404 });
   }
 
   const enquiry = createEnquiry({
     productId,
-    productName: product.name,
+    productName: isCustom ? "Custom Water Level Controller" : product!.name,
     name,
     email,
     phone,
@@ -54,6 +57,8 @@ export async function POST(req: NextRequest) {
     starterType,
     numberOfMotors,
     waterSource,
+    timerType,
+    unitType,
     message,
   });
 

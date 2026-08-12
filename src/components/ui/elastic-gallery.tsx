@@ -28,7 +28,7 @@ function ElasticGallery({ items }: { items: ElasticItemProps[] }) {
             onMouseEnter={() => setActiveId(item.id)}
             onClick={() => setActiveId(item.id)} // Touch support
             className={cn(
-              "relative block cursor-pointer overflow-hidden rounded-2xl border border-border bg-card",
+              "relative block cursor-pointer overflow-hidden rounded-2xl border border-white/30 bg-white/10 shadow-lg backdrop-blur-md dark:border-white/10 dark:bg-white/5",
               // Layout & Flex Transition
               "transition-[flex,filter] duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]",
               // Flex Logic:

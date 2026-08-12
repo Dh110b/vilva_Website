@@ -69,7 +69,7 @@ export const AnimatedHero = ({
   return (
     <div
       className={cn(
-        "relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden",
+        "relative flex min-h-[70vh] w-full flex-col items-center justify-center overflow-hidden",
         !backgroundImageUrl && "bg-transparent",
         className
       )}

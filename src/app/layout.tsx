@@ -4,7 +4,7 @@ import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Toaster } from "@/components/ui/sonner";
-import { GradientBackground } from "@/components/ui/gradient-background";
+import { UnderwaterBackground } from "@/components/ui/underwater-background";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,10 +33,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} ${sora.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <GradientBackground
-          className="fixed inset-0 -z-10 min-h-0"
-          animationDuration={26}
-        />
+        <UnderwaterBackground className="fixed inset-0 -z-10" />
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />

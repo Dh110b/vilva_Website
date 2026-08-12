@@ -12,7 +12,7 @@ export function ProductCard({
 }) {
   return (
     <Link href={`/products/${product.id}`}>
-      <Card className="h-full hover:shadow-md transition-shadow overflow-hidden py-0">
+      <Card className="h-full overflow-hidden py-0 border-secondary/40 bg-secondary/40 text-foreground shadow-lg backdrop-blur-md transition-shadow hover:shadow-xl dark:border-secondary/40 dark:bg-secondary/30 dark:text-foreground">
         <div className="relative aspect-video bg-muted">
           {product.images[0] ? (
             <Image src={product.images[0]} alt={product.name} fill className="object-cover" />
@@ -23,20 +23,20 @@ export function ProductCard({
           )}
         </div>
         <CardHeader>
-          <CardTitle className="flex items-center justify-between gap-2">
+          <CardTitle className="flex items-center justify-between gap-2 text-foreground">
             <span className="truncate">{product.name}</span>
           </CardTitle>
           {!!product.reviewCount && (
             <div className="flex items-center gap-1.5">
               <StarRating value={Math.round(product.avgRating ?? 0)} size="sm" />
-              <span className="text-xs text-muted-foreground">({product.reviewCount})</span>
+              <span className="text-xs text-foreground/70">({product.reviewCount})</span>
             </div>
           )}
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground line-clamp-2">{product.description}</p>
+          <p className="text-sm text-foreground/80 line-clamp-2">{product.description}</p>
         </CardContent>
-        <CardFooter className="pb-6">
+        <CardFooter className="pb-6 bg-transparent">
           <Badge variant="secondary" className="text-base">
             ₹{product.price.toLocaleString("en-IN")}
           </Badge>
