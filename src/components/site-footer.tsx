@@ -4,7 +4,7 @@ import { Footer } from "@/components/ui/footer";
 export function SiteFooter() {
   return (
     <Footer
-      logo={<Image src="/logo.svg" alt="" width={160} height={160} />}
+      logo={<Image src="/logo.svg" alt="" width={325} height={80} className="h-12 w-auto" />}
       brandName="Vilva"
       socialLinks={[]}
       mainLinks={[

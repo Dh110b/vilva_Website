@@ -17,6 +17,12 @@ export default function ContactPage() {
           </a>
         </div>
         <div className="flex items-center gap-3 text-muted-foreground">
+          <Phone className="w-5 h-5 shrink-0" />
+          <a href="tel:+919620239813" className="hover:text-foreground">
+            Customer Care: +91-9620239813
+          </a>
+        </div>
+        <div className="flex items-center gap-3 text-muted-foreground">
           <Mail className="w-5 h-5 shrink-0" />
           <a href="mailto:manjushreeenterprisesblr@gmail.com" className="hover:text-foreground">
             manjushreeenterprisesblr@gmail.com

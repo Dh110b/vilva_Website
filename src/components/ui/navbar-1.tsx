@@ -10,6 +10,7 @@ import Image from "next/image"
 const navItems = [
   { label: "Home", href: "/" },
   { label: "Products", href: "/products" },
+  { label: "Custom Product", href: "/custom-product" },
   { label: "About Us", href: "/about" },
   { label: "Contact Us", href: "/contact" },
 ]
@@ -21,16 +22,23 @@ const Navbar1 = ({ isAuthed = false }: { isAuthed?: boolean }) => {
 
   return (
     <div className="sticky top-0 z-40 flex justify-center w-full py-3 px-4">
-      <div className="flex items-center justify-between px-5 py-1.5 bg-card rounded-full shadow-lg w-full max-w-4xl relative z-10">
+      <div className="flex items-center justify-between px-5 py-1.5 border border-white/30 bg-white/10 backdrop-blur-md rounded-full shadow-lg w-full max-w-6xl relative z-10 dark:border-white/10 dark:bg-white/5">
         <div className="flex items-center shrink-0">
           <motion.div
             initial={{ scale: 0.8 }}
             animate={{ scale: 1 }}
-            whileHover={{ rotate: 10 }}
+            whileHover={{ scale: 1.05 }}
             transition={{ duration: 0.3 }}
           >
-            <Link href="/" aria-label="Vilva" className="flex items-center -my-3 mr-8">
-              <Image src="/logo.svg" alt="Vilva" width={80} height={80} priority />
+            <Link href="/" aria-label="Vilva" className="flex items-center shrink-0 mr-4 sm:mr-8">
+              <Image
+                src="/logo.svg"
+                alt="Vilva"
+                width={325}
+                height={80}
+                priority
+                className="h-9 w-auto sm:h-11"
+              />
             </Link>
           </motion.div>
         </div>

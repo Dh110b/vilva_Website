@@ -13,7 +13,22 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
-  const { name, description, price, images, demoUrl } = body;
+  const {
+    name,
+    description,
+    price,
+    images,
+    demoUrl,
+    sumpOrBoreCapacity,
+    motorPhaseType,
+    motorType,
+    starterType,
+    numberOfMotors,
+    waterSource,
+    numberOfTanks,
+    timerType,
+    unitType,
+  } = body;
 
   if (!name || !description || price === undefined) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -25,6 +40,15 @@ export async function POST(req: NextRequest) {
     price: Number(price),
     images: Array.isArray(images) ? images : [],
     demoUrl: demoUrl || undefined,
+    sumpOrBoreCapacity: sumpOrBoreCapacity || undefined,
+    motorPhaseType: motorPhaseType || undefined,
+    motorType: motorType || undefined,
+    starterType: starterType || undefined,
+    numberOfMotors: numberOfMotors || undefined,
+    waterSource: waterSource || undefined,
+    numberOfTanks: numberOfTanks || undefined,
+    timerType: timerType || undefined,
+    unitType: unitType || undefined,
   });
 
   return NextResponse.json(product, { status: 201 });

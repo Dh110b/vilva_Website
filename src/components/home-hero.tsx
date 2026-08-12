@@ -11,15 +11,17 @@ export function HomeHero() {
       backgroundImageUrl=""
       logo={null}
       navLinks={[]}
-      title="Quality Products, Built to Last"
-      description="Browse our range of products and get in touch — we're here to help you find the right fit."
+      title="Never Worry About Water Again"
+      description="The MicroComputer Automatic Water Level Controller that saves your time, water, electricity — and your motor pump."
       ctaButton={{
-        text: "View Products",
-        onClick: () => router.push("/products"),
+        text: "Get a Quote",
+        onClick: () => router.push("/contact"),
       }}
       secondaryCta={{
-        text: "Contact Us",
-        onClick: () => router.push("/contact"),
+        text: "Customer Care",
+        onClick: () => {
+          window.location.href = "tel:+919620239813";
+        },
       }}
     />
   );

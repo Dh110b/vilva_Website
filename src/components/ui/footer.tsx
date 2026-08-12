@@ -37,7 +37,7 @@ export function Footer({
   copyright,
 }: FooterProps) {
   return (
-    <footer className="pb-6 pt-8 lg:pb-8 lg:pt-10">
+    <footer className="pb-6 pt-8 lg:pb-8 lg:pt-10 border-t border-white/30 bg-white/15 backdrop-blur-md shadow-lg dark:border-white/10 dark:bg-white/5">
       <div className="px-4 lg:px-8">
         {socialLinks.length > 0 && (
           <div className="flex md:justify-end">
@@ -60,7 +60,7 @@ export function Footer({
             </ul>
           </div>
         )}
-        <div className="border-t pt-6 lg:grid lg:grid-cols-10 lg:items-end">
+        <div className="pt-6 lg:grid lg:grid-cols-10 lg:items-end">
           <nav className="lg:mt-0 lg:col-[4/11]">
             <ul className="list-none flex flex-wrap -my-1 -mx-2 lg:justify-end">
               {mainLinks.map((link, i) => (
@@ -81,7 +81,7 @@ export function Footer({
                 <li key={i} className="my-1 mx-3 shrink-0">
                   <a
                     href={link.href}
-                    className="text-sm text-muted-foreground underline-offset-4 hover:underline"
+                    className="text-sm text-foreground/80 underline-offset-4 hover:underline hover:text-foreground"
                   >
                     {link.label}
                   </a>
@@ -95,7 +95,7 @@ export function Footer({
               <span className="sr-only">{brandName}</span>
             </a>
             {contact && (
-              <div className="mt-4 space-y-1 text-sm leading-6 text-muted-foreground">
+              <div className="mt-4 space-y-1 text-sm leading-6 text-foreground/80">
                 {contact.phone && (
                   <div>
                     <a href={`tel:${contact.phone.replace(/[^+\d]/g, "")}`} className="hover:text-foreground">
@@ -113,7 +113,7 @@ export function Footer({
                 {contact.address && <div className="max-w-xs">{contact.address}</div>}
               </div>
             )}
-            <div className="mt-4 text-sm leading-6 text-muted-foreground whitespace-nowrap">
+            <div className="mt-4 text-sm leading-6 text-foreground/80 whitespace-nowrap">
               <div>{copyright.text}</div>
               {copyright.license && <div>{copyright.license}</div>}
             </div>

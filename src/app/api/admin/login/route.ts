@@ -1,19 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ADMIN_COOKIE_NAME, checkPassword, createSessionToken } from "@/lib/auth";
+import { ADMIN_COOKIE_NAME, checkPassword, generateAndStoreOtp } from "@/lib/auth";
+import { sendAdminOtpEmail } from "@/lib/mail";
 
 export async function POST(req: NextRequest) {
   const { password } = await req.json();
   if (!checkPassword(password)) {
     return NextResponse.json({ error: "Invalid password" }, { status: 401 });
   }
-  const res = NextResponse.json({ ok: true });
-  res.cookies.set(ADMIN_COOKIE_NAME, createSessionToken(), {
-    httpOnly: true,
-    sameSite: "lax",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 7,
-  });
-  return res;
+  const otp = generateAndStoreOtp();
+  await sendAdminOtpEmail(otp);
+  return NextResponse.json({ ok: true, otpRequired: true });
 }
 
 export async function DELETE() {

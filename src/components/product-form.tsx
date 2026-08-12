@@ -7,9 +7,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 import type { Product } from "@/lib/data";
-import { X } from "lucide-react";
+import { useOptionLists } from "@/hooks/use-option-lists";
+import { ManageOptionValuesDialog } from "@/components/manage-option-values-dialog";
+import { MotorCapacityField } from "@/components/motor-capacity-field";
+import { X, Settings } from "lucide-react";
 
 async function uploadFile(file: File): Promise<string> {
   const formData = new FormData();
@@ -27,9 +37,19 @@ export function ProductForm({ product }: { product?: Product }) {
   const [price, setPrice] = useState(product?.price?.toString() ?? "");
   const [images, setImages] = useState<string[]>(product?.images ?? []);
   const [demoUrl, setDemoUrl] = useState(product?.demoUrl ?? "");
+  const [sumpOrBoreCapacity, setSumpOrBoreCapacity] = useState(product?.sumpOrBoreCapacity ?? "");
+  const [motorPhaseType, setMotorPhaseType] = useState(product?.motorPhaseType ?? "");
+  const [motorType, setMotorType] = useState(product?.motorType ?? "");
+  const [starterType, setStarterType] = useState(product?.starterType ?? "");
+  const [numberOfMotors, setNumberOfMotors] = useState(product?.numberOfMotors ?? "");
+  const [waterSource, setWaterSource] = useState(product?.waterSource ?? "");
+  const [numberOfTanks, setNumberOfTanks] = useState(product?.numberOfTanks ?? "");
+  const [timerType, setTimerType] = useState(product?.timerType ?? "");
+  const [unitType, setUnitType] = useState(product?.unitType ?? "");
   const [uploadingImages, setUploadingImages] = useState(false);
   const [uploadingDemo, setUploadingDemo] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const { lists: optionLists, setLists: setOptionLists } = useOptionLists();
 
   async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const files = e.target.files;
@@ -65,7 +85,22 @@ export function ProductForm({ product }: { product?: Product }) {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const payload = { name, description, price: Number(price), images, demoUrl };
+      const payload = {
+        name,
+        description,
+        price: Number(price),
+        images,
+        demoUrl,
+        sumpOrBoreCapacity,
+        motorPhaseType,
+        motorType,
+        starterType,
+        numberOfMotors,
+        waterSource,
+        numberOfTanks,
+        timerType,
+        unitType,
+      };
       const res = await fetch(product ? `/api/products/${product.id}` : "/api/products", {
         method: product ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
@@ -152,6 +187,181 @@ export function ProductForm({ product }: { product?: Product }) {
           value={demoUrl}
           onChange={(e) => setDemoUrl(e.target.value)}
         />
+      </div>
+
+      <div className="space-y-3 rounded-lg border p-4">
+        <div>
+          <p className="text-sm font-medium">Motor &amp; Pump Compatibility</p>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Used as filters on the Products page so customers can find a compatible controller.
+            Click the <Settings className="inline size-3" /> icon next to a field to add or remove
+            its dropdown options.
+          </p>
+        </div>
+
+        <div className="space-y-2">
+          <div className="flex items-center gap-1">
+            <Label htmlFor="unitType">Unit Type</Label>
+            <ManageOptionValuesDialog
+              label="Unit Type"
+              categories={["timerType", "unitType"]}
+              lists={optionLists}
+              onListsChange={setOptionLists}
+            />
+          </div>
+          <Select
+            value={unitType || timerType}
+            onValueChange={(value) => {
+              setUnitType(value ?? "");
+              setTimerType(value ?? "");
+            }}
+          >
+            <SelectTrigger id="unitType" className="w-full">
+              <SelectValue placeholder="Select unit type" />
+            </SelectTrigger>
+            <SelectContent>
+              {Array.from(new Set([...optionLists.timerType, ...optionLists.unitType])).map(
+                (opt) => (
+                  <SelectItem key={opt} value={opt}>
+                    {opt}
+                  </SelectItem>
+                )
+              )}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="numberOfTanks">No. of Overhead Tanks Supported</Label>
+          <Input
+            id="numberOfTanks"
+            type="number"
+            min="1"
+            placeholder="e.g. 2"
+            value={numberOfTanks}
+            onChange={(e) => setNumberOfTanks(e.target.value)}
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <div className="flex items-center gap-1">
+              <Label htmlFor="motorPhaseType">Motor Phase Type</Label>
+              <ManageOptionValuesDialog
+                label="Motor Phase Type"
+                categories={["motorPhaseType"]}
+                lists={optionLists}
+                onListsChange={setOptionLists}
+              />
+            </div>
+            <Select
+              value={motorPhaseType}
+              onValueChange={(value) => setMotorPhaseType(value ?? "")}
+            >
+              <SelectTrigger id="motorPhaseType" className="w-full">
+                <SelectValue placeholder="Select phase" />
+              </SelectTrigger>
+              <SelectContent>
+                {optionLists.motorPhaseType.map((opt) => (
+                  <SelectItem key={opt} value={opt}>
+                    {opt}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <div className="flex items-center gap-1">
+              <Label htmlFor="starterType">Starter Type</Label>
+              <ManageOptionValuesDialog
+                label="Starter Type"
+                categories={["starterType"]}
+                lists={optionLists}
+                onListsChange={setOptionLists}
+              />
+            </div>
+            <Select value={starterType} onValueChange={(value) => setStarterType(value ?? "")}>
+              <SelectTrigger id="starterType" className="w-full">
+                <SelectValue placeholder="Select starter" />
+              </SelectTrigger>
+              <SelectContent>
+                {optionLists.starterType.map((opt) => (
+                  <SelectItem key={opt} value={opt}>
+                    {opt}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <div className="flex items-center gap-1">
+              <Label htmlFor="motorType">Motor Type</Label>
+              <ManageOptionValuesDialog
+                label="Motor Type"
+                categories={["motorType"]}
+                lists={optionLists}
+                onListsChange={setOptionLists}
+              />
+            </div>
+            <Select value={motorType} onValueChange={(value) => setMotorType(value ?? "")}>
+              <SelectTrigger id="motorType" className="w-full">
+                <SelectValue placeholder="Select type" />
+              </SelectTrigger>
+              <SelectContent>
+                {optionLists.motorType.map((opt) => (
+                  <SelectItem key={opt} value={opt}>
+                    {opt}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <div className="flex items-center gap-1">
+              <Label htmlFor="waterSource">Water Source</Label>
+              <ManageOptionValuesDialog
+                label="Water Source"
+                categories={["waterSource"]}
+                lists={optionLists}
+                onListsChange={setOptionLists}
+              />
+            </div>
+            <Select value={waterSource} onValueChange={(value) => setWaterSource(value ?? "")}>
+              <SelectTrigger id="waterSource" className="w-full">
+                <SelectValue placeholder="Select source" />
+              </SelectTrigger>
+              <SelectContent>
+                {optionLists.waterSource.map((opt) => (
+                  <SelectItem key={opt} value={opt}>
+                    {opt}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <MotorCapacityField
+          idPrefix="sumpOrBoreCapacity"
+          waterSource={waterSource}
+          value={sumpOrBoreCapacity}
+          onChange={setSumpOrBoreCapacity}
+        />
+
+        <div className="space-y-2">
+          <Label htmlFor="numberOfMotors">No. of Motors Supported</Label>
+          <Input
+            id="numberOfMotors"
+            type="number"
+            min="1"
+            placeholder="e.g. 2"
+            value={numberOfMotors}
+            onChange={(e) => setNumberOfMotors(e.target.value)}
+          />
+        </div>
       </div>
 
       <Button type="submit" disabled={submitting}>
