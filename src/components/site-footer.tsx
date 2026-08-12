@@ -12,10 +12,7 @@ export function SiteFooter() {
         { href: "/products", label: "Products" },
         { href: "/admin", label: "Admin" },
       ]}
-      legalLinks={[
-        { href: "/privacy", label: "Privacy" },
-        { href: "/terms", label: "Terms" },
-      ]}
+      legalLinks={[]}
       contact={{
         phone: "+91-9620239811",
         email: "manjushreeenterprisesblr@gmail.com",
