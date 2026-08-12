@@ -7,8 +7,13 @@ export async function POST(req: NextRequest) {
   if (!checkPassword(password)) {
     return NextResponse.json({ error: "Invalid password" }, { status: 401 });
   }
-  const otp = generateAndStoreOtp();
-  await sendAdminOtpEmail(otp);
+  try {
+    const otp = generateAndStoreOtp();
+    await sendAdminOtpEmail(otp);
+  }
+  catch (error) {
+    
+  }
   return NextResponse.json({ ok: true, otpRequired: true });
 }
 
