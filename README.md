@@ -1,6 +1,6 @@
 # Vilva
 
-Product showcase and enquiry site for **Vilva**, a MicroComputer Automatic Water Level Controller brand. Built with Next.js (App Router), Tailwind CSS, and Base UI, with a JSON-file backed admin panel — no external database required.
+Product showcase and enquiry site for **Vilva**, a MicroComputer Automatic Water Level Controller brand. Built with Next.js (App Router), Tailwind CSS, and Base UI, backed by Supabase (Postgres + Storage) — deployable to serverless hosts like Vercel.
 
 ## Features
 
@@ -23,7 +23,7 @@ Product showcase and enquiry site for **Vilva**, a MicroComputer Automatic Water
 - [Tailwind CSS 4](https://tailwindcss.com)
 - [Base UI](https://base-ui.com) primitives (Dialog, Select, etc.)
 - [Resend](https://resend.com) for transactional email (enquiry notifications, admin OTP)
-- File-based JSON storage under `data/` (no database setup needed)
+- [Supabase](https://supabase.com) — Postgres for all data, Storage for uploaded images (via `postgres` and `@supabase/supabase-js`)
 
 ## Getting Started
 
@@ -48,6 +48,17 @@ cp .env.local.example .env.local
 | `ENQUIRY_NOTIFY_EMAIL` | For email | Where new enquiry notifications are sent. |
 | `ENQUIRY_FROM_EMAIL` | No | Sender address for outgoing email (defaults to Resend's shared `onboarding@resend.dev`, which can only deliver to the address your Resend account is verified with unless you verify your own domain). |
 | `ADMIN_OTP_EMAIL` | No | Where the admin login 2FA code is sent (defaults to `manjushreeenterprisesblr@gmail.com`). |
+| `POSTGRES_URL` | Yes | Pooled Postgres connection string (from Supabase → Project Settings → Database). Used at runtime by the app. |
+| `POSTGRES_URL_NON_POOLING` | For setup | Direct (non-pooled) connection string, used only by `scripts/migrate.mjs` to run schema migrations. |
+| `SUPABASE_URL` | Yes | Your Supabase project URL, used for Storage (uploaded images). |
+| `SUPABASE_SERVICE_ROLE_KEY` | Yes | Service role key, used server-side to upload files and create the storage bucket. Keep secret — never expose client-side. |
+
+Run the schema migration once against a fresh Supabase project:
+
+```bash
+node --env-file=.env.local scripts/migrate.mjs
+node --env-file=.env.local scripts/create-bucket.mjs
+```
 
 ### 3. Run the dev server
 
@@ -63,7 +74,7 @@ Go to `/admin/login`, enter `ADMIN_PASSWORD`, then enter the 6-digit code sent t
 
 ## Data Storage
 
-All content (products, enquiries, reviews, dropdown option lists, Send Enquiry form config) is stored as JSON files under `data/`, created automatically on first write. This directory is gitignored — back it up separately in production, or swap `src/lib/data.ts` for a real database if you outgrow file storage.
+All content (products, enquiries, reviews, dropdown option lists, Send Enquiry form config, admin login OTPs) lives in Postgres tables (`products`, `enquiries`, `reviews`, `review_replies`, plus a generic `app_kv` key-value table for small config blobs) — see `scripts/migrate.mjs` for the schema. Uploaded images (product photos, review photos) go to a public Supabase Storage bucket named `uploads`.
 
 ## Project Structure
 
@@ -76,9 +87,9 @@ src/
     custom-product/         Custom controller enquiry page
   components/              UI components (forms, browsers/filters, admin tools)
   components/ui/           Base UI-driven design system primitives
-  lib/                      Data access, auth, mail, option/field config
+  lib/                      Data access (Postgres), auth, mail, option/field config, Supabase client
   hooks/                    Client hooks for live option/field config
-data/                       JSON data files (gitignored, created at runtime)
+scripts/                    One-off setup scripts (schema migration, storage bucket creation)
 ```
 
 ## Available Scripts
@@ -92,4 +103,4 @@ data/                       JSON data files (gitignored, created at runtime)
 
 ## Deployment
 
-Deployable anywhere Next.js runs with a persistent filesystem (the JSON data store needs disk to survive restarts) — e.g. a VM, container, or Node host. Set the environment variables from the table above in your hosting platform before deploying.
+Since all state lives in Supabase (not the local filesystem), this deploys cleanly to serverless hosts like [Vercel](https://vercel.com). Set the environment variables from the table above in your hosting platform, run the schema migration and bucket-creation scripts once against your Supabase project (see above), then deploy as a standard Next.js app.

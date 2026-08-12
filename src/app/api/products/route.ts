@@ -3,7 +3,7 @@ import { createProduct, getProducts } from "@/lib/data";
 import { ADMIN_COOKIE_NAME, isValidSessionToken } from "@/lib/auth";
 
 export async function GET() {
-  return NextResponse.json(getProducts());
+  return NextResponse.json(await getProducts());
 }
 
 export async function POST(req: NextRequest) {
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
   }
 
-  const product = createProduct({
+  const product = await createProduct({
     name,
     description,
     price: Number(price),

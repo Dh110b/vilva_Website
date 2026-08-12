@@ -1,8 +1,8 @@
 import { getEnquiryFieldConfig } from "@/lib/data";
 import { AdminEnquiryFieldBuilder } from "@/components/admin-enquiry-field-builder";
 
-export default function AdminEnquiryFormPage() {
-  const config = getEnquiryFieldConfig();
+export default async function AdminEnquiryFormPage() {
+  const config = await getEnquiryFieldConfig();
 
   return (
     <div>

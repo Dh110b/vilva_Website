@@ -1,10 +1,7 @@
 import crypto from "crypto";
-import fs from "fs";
-import path from "path";
+import { storeOtpHash, getOtpHash, clearOtp } from "@/lib/data";
 
 const COOKIE_NAME = "vilva_admin_session";
-const otpFile = path.join(process.cwd(), "data", "otp.json");
-const OTP_TTL_MS = 5 * 60 * 1000;
 
 function getSecret() {
   return process.env.ADMIN_PASSWORD || "change-me";
@@ -37,35 +34,25 @@ function hashOtp(otp: string): string {
   return crypto.createHmac("sha256", getSecret()).update(otp).digest("hex");
 }
 
-export function generateAndStoreOtp(): string {
+export async function generateAndStoreOtp(): Promise<string> {
   const otp = crypto.randomInt(100000, 1000000).toString();
-  const dataDir = path.dirname(otpFile);
-  if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
-  fs.writeFileSync(
-    otpFile,
-    JSON.stringify({ hash: hashOtp(otp), expiresAt: Date.now() + OTP_TTL_MS }),
-    "utf-8"
-  );
+  await storeOtpHash(hashOtp(otp));
   return otp;
 }
 
-export function verifyOtp(candidate: string): boolean {
-  if (!fs.existsSync(otpFile)) return false;
-  try {
-    const { hash, expiresAt } = JSON.parse(fs.readFileSync(otpFile, "utf-8"));
-    if (Date.now() > expiresAt) {
-      fs.unlinkSync(otpFile);
-      return false;
-    }
-    const candidateHash = hashOtp(candidate);
-    const valid =
-      candidateHash.length === hash.length &&
-      crypto.timingSafeEqual(Buffer.from(candidateHash), Buffer.from(hash));
-    if (valid) fs.unlinkSync(otpFile);
-    return valid;
-  } catch {
+export async function verifyOtp(candidate: string): Promise<boolean> {
+  const stored = await getOtpHash();
+  if (!stored) return false;
+  if (Date.now() > stored.expiresAt) {
+    await clearOtp();
     return false;
   }
+  const candidateHash = hashOtp(candidate);
+  const valid =
+    candidateHash.length === stored.hash.length &&
+    crypto.timingSafeEqual(Buffer.from(candidateHash), Buffer.from(stored.hash));
+  if (valid) await clearOtp();
+  return valid;
 }
 
 export const ADMIN_COOKIE_NAME = COOKIE_NAME;

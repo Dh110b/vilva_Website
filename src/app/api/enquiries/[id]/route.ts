@@ -22,7 +22,7 @@ export async function PATCH(
     return NextResponse.json({ error: "Invalid status" }, { status: 400 });
   }
 
-  const enquiry = updateEnquiryStatus(id, status);
+  const enquiry = await updateEnquiryStatus(id, status);
   if (!enquiry) return NextResponse.json({ error: "Not found" }, { status: 404 });
   return NextResponse.json(enquiry);
 }

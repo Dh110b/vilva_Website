@@ -13,7 +13,7 @@ function isValidCategory(category: unknown): category is OptionCategory {
 }
 
 export async function GET() {
-  return NextResponse.json(getOptionLists());
+  return NextResponse.json(await getOptionLists());
 }
 
 export async function POST(req: NextRequest) {
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
   if (!isValidCategory(category) || !value || typeof value !== "string") {
     return NextResponse.json({ error: "Invalid category or value" }, { status: 400 });
   }
-  const lists = addOption(category, value);
+  const lists = await addOption(category, value);
   return NextResponse.json(lists);
 }
 
@@ -38,7 +38,7 @@ export async function PUT(req: NextRequest) {
   if (!isValidCategory(category) || !Array.isArray(values)) {
     return NextResponse.json({ error: "Invalid category or values" }, { status: 400 });
   }
-  const lists = setOptionList(category, values);
+  const lists = await setOptionList(category, values);
   return NextResponse.json(lists);
 }
 
@@ -51,6 +51,6 @@ export async function DELETE(req: NextRequest) {
   if (!isValidCategory(category) || !value || typeof value !== "string") {
     return NextResponse.json({ error: "Invalid category or value" }, { status: 400 });
   }
-  const lists = deleteOption(category, value);
+  const lists = await deleteOption(category, value);
   return NextResponse.json(lists);
 }
