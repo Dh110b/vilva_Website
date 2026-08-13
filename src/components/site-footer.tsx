@@ -10,7 +10,9 @@ export function SiteFooter() {
       mainLinks={[
         { href: "/", label: "Home" },
         { href: "/products", label: "Products" },
-        { href: "/admin", label: "Admin" },
+        { href: "/custom-product", label: "Custom Product" },
+        { href: "/about", label: "About Us" },
+        { href: "/contact", label: "Contact Us" },
       ]}
       legalLinks={[]}
       contact={{
