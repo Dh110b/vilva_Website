@@ -58,24 +58,24 @@ export default async function Home() {
       </section>
 
       <section className="py-10">
-        <div className="container mx-auto grid max-w-4xl gap-6 px-4 sm:grid-cols-2">
-          <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-6 shadow-lg backdrop-blur-md dark:border-destructive/20 dark:bg-destructive/10">
+        <div className="container mx-auto grid max-w-6xl gap-8 px-4 sm:grid-cols-2">
+          <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-8 shadow-lg backdrop-blur-md dark:border-destructive/20 dark:bg-destructive/10">
             <h3 className="mb-4 text-3xl font-bold text-destructive">STOP</h3>
-            <ul className="space-y-3">
+            <ul className="space-y-4">
               {stopItems.map((item) => (
-                <li key={item} className="flex items-center gap-2">
-                  <XCircle className="size-5 shrink-0 text-destructive" />
+                <li key={item} className="flex items-center gap-2 text-xl font-bold text-destructive">
+                  <XCircle className="size-6 shrink-0 text-destructive" />
                   {item}
                 </li>
               ))}
             </ul>
           </div>
-          <div className="rounded-lg border border-success/30 bg-success/10 p-6 shadow-lg backdrop-blur-md dark:border-success/20 dark:bg-success/10">
-            <h3 className="mb-4 text-3xl font-bold text-success">SAVE</h3>
-            <ul className="space-y-3">
+          <div className="rounded-lg border border-success/30 bg-success/10 p-8 shadow-lg backdrop-blur-md dark:border-success/20 dark:bg-success/10">
+            <h3 className="mb-4 text-3xl font-bold text-green-800">SAVE</h3>
+            <ul className="space-y-4">
               {saveItems.map((item) => (
-                <li key={item} className="flex items-center gap-2">
-                  <CheckCircle2 className="size-5 shrink-0 text-success" />
+                <li key={item} className="flex items-center gap-2 text-xl font-bold text-green-800">
+                  <CheckCircle2 className="size-6 shrink-0 text-green-800" />
                   {item}
                 </li>
               ))}
