@@ -13,9 +13,9 @@ export function ProductCard({
   return (
     <Link href={`/products/${product.id}`}>
       <Card className="h-full overflow-hidden py-0 border-secondary/40 bg-secondary/40 text-foreground shadow-lg backdrop-blur-md transition-shadow hover:shadow-xl dark:border-secondary/40 dark:bg-secondary/30 dark:text-foreground">
-        <div className="relative aspect-video bg-muted">
+        <div className="relative aspect-video border-b border-foreground/25 bg-white/10 backdrop-blur-md dark:border-white/20 dark:bg-white/5">
           {product.images[0] ? (
-            <Image src={product.images[0]} alt={product.name} fill className="object-cover" />
+            <Image src={product.images[0]} alt={product.name} fill className="object-contain" />
           ) : (
             <div className="flex h-full items-center justify-center text-muted-foreground text-sm">
               No image

@@ -80,14 +80,14 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
-              className="relative aspect-[4/5] w-full overflow-hidden rounded-xl border bg-muted"
+              className="relative aspect-[4/5] w-full overflow-hidden rounded-xl border border-foreground/25 bg-white/10 backdrop-blur-md shadow-lg dark:border-white/20 dark:bg-white/5"
             >
               {hasImages ? (
                 <Image
                   src={product.images[currentImageIndex]}
                   alt={`${product.name} image ${currentImageIndex + 1}`}
                   fill
-                  className="object-cover"
+                  className="object-contain"
                 />
               ) : (
                 <div className="flex h-full items-center justify-center text-muted-foreground text-sm">
@@ -124,13 +124,13 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   onClick={() => setCurrentImageIndex(index)}
                   aria-label={`View image ${index + 1}`}
                   className={cn(
-                    "relative aspect-square overflow-hidden rounded-lg border-2 transition-colors",
+                    "relative aspect-square overflow-hidden rounded-lg border-2 bg-white/10 backdrop-blur-md dark:bg-white/5 transition-colors",
                     currentImageIndex === index
                       ? "border-primary"
                       : "border-transparent hover:border-muted-foreground/30"
                   )}
                 >
-                  <Image src={img} alt="" fill className="object-cover" />
+                  <Image src={img} alt="" fill className="object-contain" />
                 </button>
               ))}
             </div>
