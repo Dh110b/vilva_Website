@@ -1,5 +1,6 @@
 import { getStorageUsage } from "@/lib/supabase";
 import { getAllUsedImageUrls, type ImageUsage } from "@/lib/data";
+import { checkStorageAlerts } from "@/lib/storage-alerts";
 import { AdminStorageUsage } from "@/components/admin-storage-usage";
 
 export default async function AdminStoragePage() {
@@ -12,6 +13,8 @@ export default async function AdminStoragePage() {
     })),
     getAllUsedImageUrls().catch(() => new Map<string, ImageUsage[]>()),
   ]);
+
+  await checkStorageAlerts();
 
   const files = storageUsage.files.map((file) => ({
     ...file,

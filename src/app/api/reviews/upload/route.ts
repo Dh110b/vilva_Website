@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin, UPLOADS_BUCKET } from "@/lib/supabase";
+import { checkStorageAlerts } from "@/lib/storage-alerts";
 
 const maxSizeBytes = 5 * 1024 * 1024;
 const allowedTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
@@ -39,6 +40,8 @@ export async function POST(req: NextRequest) {
   }
 
   const { data } = supabase.storage.from(UPLOADS_BUCKET).getPublicUrl(filename);
+
+  await checkStorageAlerts();
 
   return NextResponse.json({ url: data.publicUrl });
 }

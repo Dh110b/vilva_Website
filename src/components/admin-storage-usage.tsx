@@ -32,7 +32,19 @@ export function AdminStorageUsage({
   const usedBytes = files.reduce((sum, f) => sum + f.sizeBytes, 0);
   const fileCount = files.length;
   const percent = limitBytes > 0 ? Math.min(100, (usedBytes / limitBytes) * 100) : 0;
-  const nearLimit = percent >= 90;
+
+  const barColor =
+    percent >= 100
+      ? "bg-destructive"
+      : percent >= 95
+        ? "bg-red-600"
+        : percent >= 90
+          ? "bg-orange-600"
+          : percent >= 80
+            ? "bg-orange-400"
+            : percent >= 50
+              ? "bg-yellow-400"
+              : "bg-primary";
 
   async function removeFile(name: string) {
     if (!confirm(`Delete "${name}" from storage? This cannot be undone.`)) return;
@@ -68,7 +80,7 @@ export function AdminStorageUsage({
           </div>
           <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
             <div
-              className={`h-full rounded-full ${nearLimit ? "bg-destructive" : "bg-primary"}`}
+              className={`h-full rounded-full transition-colors ${barColor}`}
               style={{ width: `${percent}%` }}
             />
           </div>

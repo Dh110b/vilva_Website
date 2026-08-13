@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Download } from "lucide-react";
 import { toast } from "sonner";
 import type { Enquiry } from "@/lib/data";
 import { ENQUIRY_STATUSES, type EnquiryStatus } from "@/lib/enquiry-status";
@@ -83,6 +84,79 @@ export function AdminEnquiriesBrowser({ enquiries: initial }: { enquiries: Enqui
 
     return result;
   }, [enquiries, statusFilter, productFilter, sort]);
+
+  function exportToExcel() {
+    const customFieldKeys = Array.from(
+      new Set(filtered.flatMap((e) => Object.keys(e.customFields ?? {})))
+    );
+
+    const headers = [
+      "Date",
+      "Time",
+      "Product",
+      "Name",
+      "Email",
+      "Phone",
+      "Address",
+      "Pincode",
+      "Status",
+      "Motor Capacity",
+      "No. of Motors",
+      "Motor Phase Type",
+      "Motor Type",
+      "Starter Type",
+      "Water Source",
+      "Unit Type",
+      "No. of Overhead Tanks",
+      ...customFieldKeys.map((key) => customFieldLabels.get(key) ?? key),
+      "Additional Requirements",
+    ];
+
+    function escapeCell(value: unknown): string {
+      const text = value === undefined || value === null ? "" : String(value);
+      if (/[",\n]/.test(text)) return `"${text.replace(/"/g, '""')}"`;
+      return text;
+    }
+
+    const rows = filtered.map((enquiry) => {
+      const createdAt = new Date(enquiry.createdAt);
+      return [
+        createdAt.toLocaleDateString("en-US"),
+        createdAt.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
+        enquiry.productName,
+        enquiry.name,
+        enquiry.email,
+        enquiry.phone || "",
+        enquiry.address,
+        enquiry.pincode,
+        enquiry.status,
+        enquiry.sumpOrBoreCapacity || "",
+        enquiry.numberOfMotors || "",
+        enquiry.motorPhaseType || "",
+        enquiry.motorType || "",
+        enquiry.starterType || "",
+        enquiry.waterSource || "",
+        enquiry.unitType || enquiry.timerType || "",
+        enquiry.numberOfTanks || "",
+        ...customFieldKeys.map((key) => enquiry.customFields?.[key] ?? ""),
+        enquiry.message || "",
+      ];
+    });
+
+    const csv =
+      "﻿" +
+      [headers, ...rows].map((row) => row.map(escapeCell).join(",")).join("\r\n");
+
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `enquiries-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
 
   async function changeStatus(id: string, status: EnquiryStatus) {
     setUpdatingId(id);
@@ -170,6 +244,9 @@ export function AdminEnquiriesBrowser({ enquiries: initial }: { enquiries: Enqui
               </SelectContent>
             </Select>
           </div>
+          <Button type="button" size="sm" variant="outline" onClick={exportToExcel}>
+            <Download className="size-4" /> Export to Excel
+          </Button>
         </div>
       </div>
 

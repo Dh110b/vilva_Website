@@ -32,6 +32,42 @@ export async function sendAdminOtpEmail(otp: string) {
   }
 }
 
+export async function sendStorageAlertEmail(input: {
+  threshold: number;
+  percent: number;
+  usedBytes: number;
+  limitBytes: number;
+}) {
+  const apiKey = process.env.RESEND_API_KEY;
+  const to = process.env.ENQUIRY_NOTIFY_EMAIL;
+  if (!apiKey || !to) return;
+
+  const usedMb = (input.usedBytes / (1024 * 1024)).toFixed(1);
+  const limitMb = (input.limitBytes / (1024 * 1024)).toFixed(1);
+
+  try {
+    await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: process.env.ENQUIRY_FROM_EMAIL || "onboarding@resend.dev",
+        to,
+        subject: `Vilva storage is at ${input.threshold}% capacity`,
+        html: `
+          <p>Your Vilva website storage has reached <strong>${input.threshold}%</strong> of its limit.</p>
+          <p><strong>Used:</strong> ${usedMb} MB of ${limitMb} MB (${input.percent.toFixed(1)}%)</p>
+          <p>Visit the admin Storage page to review and delete unused files.</p>
+        `,
+      }),
+    });
+  } catch (err) {
+    console.error("Failed to send storage alert email", err);
+  }
+}
+
 export async function sendEnquiryEmail(enquiry: Enquiry) {
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.ENQUIRY_NOTIFY_EMAIL;

@@ -447,6 +447,17 @@ export async function saveEnquiryFieldConfig(
   return normalized;
 }
 
+const STORAGE_ALERT_KV_KEY = "storage_alert_state";
+
+export async function getStorageAlertThreshold(): Promise<number> {
+  const state = await getKv<{ lastNotifiedThreshold: number }>(STORAGE_ALERT_KV_KEY);
+  return state?.lastNotifiedThreshold ?? 0;
+}
+
+export async function setStorageAlertThreshold(threshold: number): Promise<void> {
+  await setKv(STORAGE_ALERT_KV_KEY, { lastNotifiedThreshold: threshold });
+}
+
 const OTP_KV_KEY = "admin_otp";
 const OTP_TTL_MS = 5 * 60 * 1000;
 

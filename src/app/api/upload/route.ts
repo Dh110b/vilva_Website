@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ADMIN_COOKIE_NAME, isValidSessionToken } from "@/lib/auth";
 import { getSupabaseAdmin, UPLOADS_BUCKET } from "@/lib/supabase";
+import { checkStorageAlerts } from "@/lib/storage-alerts";
 
 function safeExt(name: string) {
   const match = name.toLowerCase().match(/\.[a-z0-9]{1,10}$/);
@@ -36,6 +37,8 @@ export async function POST(req: NextRequest) {
   }
 
   const { data } = supabase.storage.from(UPLOADS_BUCKET).getPublicUrl(filename);
+
+  await checkStorageAlerts();
 
   return NextResponse.json({ url: data.publicUrl });
 }
