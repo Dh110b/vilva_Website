@@ -23,6 +23,7 @@ export type EnquiryFormValues = {
   waterSource: string;
   sumpOrBoreCapacity: string;
   numberOfMotors: string;
+  customFields: Record<string, string>;
 };
 
 export function EnquiryFormFields<T extends EnquiryFormValues>({
@@ -199,8 +200,52 @@ export function EnquiryFormFields<T extends EnquiryFormValues>({
                   />
                 </div>
               );
-            default:
-              return null;
+            default: {
+              if (!field.custom) return null;
+              const value = form.customFields[field.key] ?? "";
+              if (field.type === "dropdown") {
+                return (
+                  <div className="space-y-2" key={field.key}>
+                    <Label htmlFor={field.key}>{field.label}</Label>
+                    <Select
+                      value={value}
+                      onValueChange={(v) =>
+                        setForm((f) => ({
+                          ...f,
+                          customFields: { ...f.customFields, [field.key]: v ?? "" },
+                        }))
+                      }
+                    >
+                      <SelectTrigger id={field.key} className="w-full">
+                        <SelectValue placeholder={`Select ${field.label.toLowerCase()}`} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {(field.options ?? []).map((opt) => (
+                          <SelectItem key={opt} value={opt}>
+                            {opt}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                );
+              }
+              return (
+                <div className="space-y-2" key={field.key}>
+                  <Label htmlFor={field.key}>{field.label}</Label>
+                  <Input
+                    id={field.key}
+                    value={value}
+                    onChange={(e) =>
+                      setForm((f) => ({
+                        ...f,
+                        customFields: { ...f.customFields, [field.key]: e.target.value },
+                      }))
+                    }
+                  />
+                </div>
+              );
+            }
           }
         })}
     </>

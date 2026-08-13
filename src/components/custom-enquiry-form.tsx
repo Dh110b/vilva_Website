@@ -26,6 +26,7 @@ const initialForm = {
   timerType: "",
   unitType: "",
   message: "",
+  customFields: {} as Record<string, string>,
 };
 
 export function CustomEnquiryForm() {

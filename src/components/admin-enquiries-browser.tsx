@@ -24,6 +24,7 @@ import { toast } from "sonner";
 import type { Enquiry } from "@/lib/data";
 import { ENQUIRY_STATUSES, type EnquiryStatus } from "@/lib/enquiry-status";
 import { cn } from "@/lib/utils";
+import { useEnquiryFieldConfig } from "@/hooks/use-enquiry-field-config";
 
 type SortOption = "newest" | "oldest" | "name-asc";
 
@@ -47,6 +48,14 @@ export function AdminEnquiriesBrowser({ enquiries: initial }: { enquiries: Enqui
   const [sort, setSort] = useState<SortOption>("newest");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const { config: fieldConfig } = useEnquiryFieldConfig();
+  const customFieldLabels = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const field of fieldConfig) {
+      if (field.custom) map.set(field.key, field.label);
+    }
+    return map;
+  }, [fieldConfig]);
 
   const products = useMemo(
     () => Array.from(new Set(enquiries.map((e) => e.productName))).sort(),
@@ -314,6 +323,22 @@ export function AdminEnquiriesBrowser({ enquiries: initial }: { enquiries: Enqui
                           </div>
                         </dl>
                       </div>
+
+                      {enquiry.customFields && Object.keys(enquiry.customFields).length > 0 && (
+                        <div className="border-t pt-3">
+                          <p className="text-sm font-medium mb-2">Custom Fields</p>
+                          <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
+                            {Object.entries(enquiry.customFields).map(([key, value]) => (
+                              <div key={key}>
+                                <dt className="text-muted-foreground">
+                                  {customFieldLabels.get(key) ?? key}
+                                </dt>
+                                <dd className="font-medium">{value || "Not provided"}</dd>
+                              </div>
+                            ))}
+                          </dl>
+                        </div>
+                      )}
 
                       <div className="border-t pt-3">
                         <p className="text-sm font-medium mb-1">Additional Requirements</p>

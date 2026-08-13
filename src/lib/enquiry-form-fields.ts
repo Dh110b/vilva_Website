@@ -11,10 +11,15 @@ export const ENQUIRY_FIELD_KEYS = [
 
 export type EnquiryFieldKey = (typeof ENQUIRY_FIELD_KEYS)[number];
 
+export type CustomFieldType = "text" | "dropdown";
+
 export type EnquiryFieldConfig = {
-  key: EnquiryFieldKey;
+  key: string;
   label: string;
   enabled: boolean;
+  custom?: boolean;
+  type?: CustomFieldType;
+  options?: string[];
 };
 
 const DEFAULT_LABELS: Record<EnquiryFieldKey, string> = {
@@ -36,6 +41,23 @@ export function defaultEnquiryFieldConfig(): EnquiryFieldConfig[] {
   }));
 }
 
+export function generateCustomFieldKey(): string {
+  return `custom_${Math.random().toString(36).slice(2, 10)}`;
+}
+
+function isValidCustomField(entry: unknown): entry is EnquiryFieldConfig {
+  if (!entry || typeof entry !== "object") return false;
+  const e = entry as Record<string, unknown>;
+  if (typeof e.key !== "string" || !e.key.trim()) return false;
+  if (typeof e.label !== "string" || !e.label.trim()) return false;
+  if (e.type !== "text" && e.type !== "dropdown") return false;
+  if (e.type === "dropdown") {
+    if (!Array.isArray(e.options)) return false;
+    if (!e.options.every((o) => typeof o === "string")) return false;
+  }
+  return true;
+}
+
 export function normalizeEnquiryFieldConfig(
   stored: unknown
 ): EnquiryFieldConfig[] {
@@ -47,18 +69,29 @@ export function normalizeEnquiryFieldConfig(
     if (
       entry &&
       typeof entry === "object" &&
-      typeof entry.key === "string" &&
-      ENQUIRY_FIELD_KEYS.includes(entry.key)
+      typeof (entry as { key?: unknown }).key === "string" &&
+      ENQUIRY_FIELD_KEYS.includes((entry as { key: string }).key as EnquiryFieldKey)
     ) {
-      byKey.set(entry.key, {
-        key: entry.key,
-        label: typeof entry.label === "string" && entry.label.trim() ? entry.label : DEFAULT_LABELS[entry.key as EnquiryFieldKey],
-        enabled: typeof entry.enabled === "boolean" ? entry.enabled : true,
+      const e = entry as { key: EnquiryFieldKey; label?: unknown; enabled?: unknown };
+      byKey.set(e.key, {
+        key: e.key,
+        label: typeof e.label === "string" && e.label.trim() ? e.label : DEFAULT_LABELS[e.key],
+        enabled: typeof e.enabled === "boolean" ? e.enabled : true,
+      });
+    } else if (isValidCustomField(entry) && (entry as EnquiryFieldConfig).custom) {
+      const e = entry as EnquiryFieldConfig;
+      byKey.set(e.key, {
+        key: e.key,
+        label: e.label,
+        enabled: typeof e.enabled === "boolean" ? e.enabled : true,
+        custom: true,
+        type: e.type,
+        options: e.type === "dropdown" ? (e.options ?? []) : undefined,
       });
     }
   }
 
-  // Preserve stored order; append any missing keys (e.g. newly added fields) at the end.
+  // Preserve stored order; append any missing built-in keys (e.g. newly added fields) at the end.
   const ordered = Array.from(byKey.values());
   for (const def of defaults) {
     if (!byKey.has(def.key)) ordered.push(def);

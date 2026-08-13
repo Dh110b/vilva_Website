@@ -30,6 +30,7 @@ export async function POST(req: NextRequest) {
     timerType,
     unitType,
     message,
+    customFields,
   } = body;
 
   if (!productId || !name || !email || !phone || !address || !pincode) {
@@ -60,6 +61,8 @@ export async function POST(req: NextRequest) {
     timerType,
     unitType,
     message,
+    customFields:
+      customFields && typeof customFields === "object" ? customFields : undefined,
   });
 
   await sendEnquiryEmail(enquiry);

@@ -66,6 +66,7 @@ export type Enquiry = {
   timerType?: string;
   unitType?: string;
   message?: string;
+  customFields?: Record<string, string>;
   status: EnquiryStatus;
   createdAt: string;
 };
@@ -185,6 +186,7 @@ function rowToEnquiry(row: any): Enquiry {
     timerType: row.timer_type ?? undefined,
     unitType: row.unit_type ?? undefined,
     message: row.message ?? undefined,
+    customFields: row.custom_fields ?? undefined,
     status: (row.status ?? "New") as EnquiryStatus,
     createdAt: new Date(row.created_at).toISOString(),
   };
@@ -202,13 +204,14 @@ export async function createEnquiry(
     insert into enquiries (
       product_id, product_name, name, email, phone, number_of_tanks, address, pincode,
       sump_or_bore_capacity, motor_phase_type, motor_type, starter_type, number_of_motors,
-      water_source, timer_type, unit_type, message, status
+      water_source, timer_type, unit_type, message, custom_fields, status
     ) values (
       ${input.productId}, ${input.productName}, ${input.name}, ${input.email}, ${input.phone ?? null},
       ${input.numberOfTanks ?? null}, ${input.address}, ${input.pincode},
       ${input.sumpOrBoreCapacity ?? null}, ${input.motorPhaseType ?? null}, ${input.motorType ?? null},
       ${input.starterType ?? null}, ${input.numberOfMotors ?? null}, ${input.waterSource ?? null},
-      ${input.timerType ?? null}, ${input.unitType ?? null}, ${input.message ?? null}, 'New'
+      ${input.timerType ?? null}, ${input.unitType ?? null}, ${input.message ?? null},
+      ${sql.json(input.customFields ?? {})}, 'New'
     )
     returning *
   `;

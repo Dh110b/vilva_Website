@@ -19,6 +19,8 @@ export function OptionValuesEditor({
 }) {
   const [newValue, setNewValue] = useState("");
   const [busy, setBusy] = useState(false);
+  const [editingValue, setEditingValue] = useState<string | null>(null);
+  const [editingText, setEditingText] = useState("");
 
   const merged = Array.from(new Set(categories.flatMap((c) => lists[c])));
 
@@ -83,6 +85,32 @@ export function OptionValuesEditor({
     }
   }
 
+  async function renameValue(oldValue: string, newValueText: string) {
+    const trimmed = newValueText.trim();
+    setEditingValue(null);
+    if (!trimmed || trimmed === oldValue) return;
+    if (merged.includes(trimmed)) {
+      toast.error("That value already exists");
+      return;
+    }
+    const cat = categoryOf(oldValue);
+    const next = { ...lists, [cat]: lists[cat].map((v) => (v === oldValue ? trimmed : v)) };
+    setBusy(true);
+    try {
+      const res = await fetch("/api/options", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ category: cat, values: next[cat] }),
+      });
+      if (!res.ok) throw new Error("Failed");
+      onListsChange(next);
+    } catch {
+      toast.error("Failed to rename value");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function removeValue(value: string) {
     const cat = categoryOf(value);
     setBusy(true);
@@ -133,7 +161,34 @@ export function OptionValuesEditor({
                   <ChevronDown className="size-3.5" />
                 </button>
               </div>
-              <span className="flex-1 truncate">{value}</span>
+              {editingValue === value ? (
+                <Input
+                  autoFocus
+                  className="h-7 flex-1"
+                  value={editingText}
+                  onChange={(e) => setEditingText(e.target.value)}
+                  onBlur={() => renameValue(value, editingText)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      renameValue(value, editingText);
+                    } else if (e.key === "Escape") {
+                      setEditingValue(null);
+                    }
+                  }}
+                />
+              ) : (
+                <button
+                  type="button"
+                  className="flex-1 truncate text-left hover:underline underline-offset-2"
+                  onClick={() => {
+                    setEditingValue(value);
+                    setEditingText(value);
+                  }}
+                >
+                  {value}
+                </button>
+              )}
               <button
                 type="button"
                 disabled={busy}
