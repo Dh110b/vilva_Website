@@ -4,6 +4,9 @@ import { HomeHero } from "@/components/home-hero";
 import { ElasticGallery } from "@/components/ui/elastic-gallery";
 import { Button } from "@/components/ui/button";
 import { ArrowRightIcon, CheckCircle2, XCircle } from "lucide-react";
+import { ScrollVelocityRow } from "@/components/ui/scroll-velocity-text";
+
+const scrollWords = ["Area wise Distributer and Dealer required"];
 
 const trustItems = [
   "24 Months Warranty*",
@@ -34,6 +37,17 @@ export default async function Home() {
   return (
     <div className="flex w-full flex-col">
       <HomeHero />
+
+      <section className="border-y py-4">
+        <ScrollVelocityRow baseVelocity={3}>
+          {scrollWords.map((word) => (
+            <span className="mx-6 font-medium text-base text-blue-900 dark:text-blue-300" key={word}>
+              {word}
+              <span className="mx-6 text-blue-900/30 dark:text-blue-300/30">•</span>
+            </span>
+          ))}
+        </ScrollVelocityRow>
+      </section>
 
       <section className="border-y bg-muted/40">
         <div className="container mx-auto flex flex-wrap items-center justify-center gap-x-8 gap-y-3 px-4 py-4 text-sm font-medium">
