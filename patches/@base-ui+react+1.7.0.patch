@@ -1,0 +1,36 @@
+diff --git a/node_modules/@base-ui/react/dialog/portal/DialogPortal.js b/node_modules/@base-ui/react/dialog/portal/DialogPortal.js
+index cfa2dca..c9f7730 100644
+--- a/node_modules/@base-ui/react/dialog/portal/DialogPortal.js
++++ b/node_modules/@base-ui/react/dialog/portal/DialogPortal.js
+@@ -39,9 +39,12 @@ const DialogPortal = exports.DialogPortal = /*#__PURE__*/React.forwardRef(functi
+       ref: forwardedRef,
+       ...portalProps,
+       children: [mounted && modal === true && /*#__PURE__*/(0, _jsxRuntime.jsx)(_InternalBackdrop.InternalBackdrop, {
++        key: "internal-backdrop",
+         ref: store.context.internalBackdropRef,
+         inert: (0, _inertValue.inertValue)(!open)
+-      }), props.children]
++      }), /*#__PURE__*/(0, _jsxRuntime.jsx)(React.Fragment, {
++        children: props.children
++      }, "dialog-portal-children")]
+     })
+   });
+ });
+diff --git a/node_modules/@base-ui/react/dialog/portal/DialogPortal.mjs b/node_modules/@base-ui/react/dialog/portal/DialogPortal.mjs
+index 014516e..791aa40 100644
+--- a/node_modules/@base-ui/react/dialog/portal/DialogPortal.mjs
++++ b/node_modules/@base-ui/react/dialog/portal/DialogPortal.mjs
+@@ -34,9 +34,12 @@ export const DialogPortal = /*#__PURE__*/React.forwardRef(function DialogPortal(
+       ref: forwardedRef,
+       ...portalProps,
+       children: [mounted && modal === true && /*#__PURE__*/_jsx(InternalBackdrop, {
++        key: "internal-backdrop",
+         ref: store.context.internalBackdropRef,
+         inert: inertValue(!open)
+-      }), props.children]
++      }), /*#__PURE__*/_jsx(React.Fragment, {
++        children: props.children
++      }, "dialog-portal-children")]
+     })
+   });
+ });
