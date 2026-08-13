@@ -1,5 +1,10 @@
-export const metadata = {
-  title: "About Us - Vilva",
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About Us",
+  description:
+    "Learn about Vilva Distributors and Services — our story, our promoter's background in the two-wheeler and battery distribution industry, and our mission to build reliable, made-in-India water level controllers.",
+  alternates: { canonical: "/about" },
 };
 
 export default function AboutPage() {

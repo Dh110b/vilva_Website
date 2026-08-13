@@ -1,7 +1,11 @@
+import type { Metadata } from "next";
 import { CustomEnquiryForm } from "@/components/custom-enquiry-form";
 
-export const metadata = {
-  title: "Custom Product - Vilva",
+export const metadata: Metadata = {
+  title: "Custom Water Level Controller",
+  description:
+    "Need a water level controller tailored to your setup? Tell us your requirements and Vilva will design a custom automatic water level controller for your sump, overhead tank, and motor pump.",
+  alternates: { canonical: "/custom-product" },
 };
 
 export default function CustomProductPage() {

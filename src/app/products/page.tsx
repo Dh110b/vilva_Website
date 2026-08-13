@@ -1,8 +1,12 @@
+import type { Metadata } from "next";
 import { getProducts, getProductRatings } from "@/lib/data";
 import { ProductBrowser } from "@/components/product-browser";
 
-export const metadata = {
-  title: "Products - Vilva",
+export const metadata: Metadata = {
+  title: "Products",
+  description:
+    "Browse Vilva's range of MicroComputer Automatic Water Level Controllers for sump and overhead tanks — single & three phase compatible, submersible & monoblock pump compatible.",
+  alternates: { canonical: "/products" },
 };
 
 export default async function ProductsPage() {

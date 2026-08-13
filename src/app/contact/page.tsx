@@ -1,7 +1,11 @@
+import type { Metadata } from "next";
 import { Mail, Phone, MapPin } from "lucide-react";
 
-export const metadata = {
-  title: "Contact Us - Vilva",
+export const metadata: Metadata = {
+  title: "Contact Us",
+  description:
+    "Get in touch with Vilva for product enquiries, custom water level controller requirements, or support. Call, email, or visit us in Bengaluru, Karnataka.",
+  alternates: { canonical: "/contact" },
 };
 
 export default function ContactPage() {
