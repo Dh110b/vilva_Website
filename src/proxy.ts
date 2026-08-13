@@ -5,10 +5,10 @@ export const config = {
   matcher: ["/admin/:path*"],
 };
 
-export function proxy(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const token = req.cookies.get(ADMIN_COOKIE_NAME)?.value;
-  const isAuthed = isValidSessionToken(token);
+  const isAuthed = !!(await isValidSessionToken(token));
 
   if (pathname.startsWith("/admin/login")) {
     if (isAuthed) {
@@ -19,7 +19,9 @@ export function proxy(req: NextRequest) {
 
   if (!isAuthed) {
     const loginUrl = new URL("/admin/login", req.url);
-    return NextResponse.redirect(loginUrl);
+    const res = NextResponse.redirect(loginUrl);
+    res.cookies.delete(ADMIN_COOKIE_NAME);
+    return res;
   }
 
   return NextResponse.next();

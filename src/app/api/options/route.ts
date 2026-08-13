@@ -3,9 +3,9 @@ import { addOption, deleteOption, getOptionLists, setOptionList } from "@/lib/da
 import { ADMIN_COOKIE_NAME, isValidSessionToken } from "@/lib/auth";
 import { OPTION_CATEGORIES, type OptionCategory } from "@/lib/motor-options";
 
-function requireAuth(req: NextRequest) {
+async function requireAuth(req: NextRequest) {
   const token = req.cookies.get(ADMIN_COOKIE_NAME)?.value;
-  return isValidSessionToken(token);
+  return !!(await isValidSessionToken(token));
 }
 
 function isValidCategory(category: unknown): category is OptionCategory {
@@ -17,7 +17,7 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  if (!requireAuth(req)) {
+  if (!(await requireAuth(req))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const body = await req.json();
@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-  if (!requireAuth(req)) {
+  if (!(await requireAuth(req))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const body = await req.json();
@@ -43,7 +43,7 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  if (!requireAuth(req)) {
+  if (!(await requireAuth(req))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const body = await req.json();

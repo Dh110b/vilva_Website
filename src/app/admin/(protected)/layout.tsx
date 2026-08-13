@@ -18,6 +18,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Link href="/admin/storage" className="font-medium hover:underline">
             Storage
           </Link>
+          <Link href="/admin/settings" className="font-medium hover:underline">
+            Settings
+          </Link>
         </nav>
         <LogoutButton />
       </div>

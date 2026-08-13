@@ -1,4 +1,11 @@
 import postgres from "postgres";
+import crypto from "crypto";
+
+function hashPassword(password) {
+  const salt = crypto.randomBytes(16).toString("hex");
+  const hash = crypto.scryptSync(password, salt, 64).toString("hex");
+  return `scrypt$${salt}$${hash}`;
+}
 
 const connectionString = process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL;
 if (!connectionString) {
@@ -88,13 +95,74 @@ async function main() {
     );
   `;
 
+  await sql`
+    create table if not exists admin_settings (
+      id boolean primary key default true,
+      password_hash text not null,
+      password_algo text not null default 'scrypt',
+      password_updated_at timestamptz not null default now(),
+      constraint admin_settings_singleton check (id)
+    );
+  `;
+
+  await sql`
+    create table if not exists admin_login_events (
+      id uuid primary key default gen_random_uuid(),
+      event_type text not null,
+      success boolean not null,
+      ip text,
+      user_agent text,
+      created_at timestamptz not null default now()
+    );
+  `;
+  await sql`
+    create index if not exists admin_login_events_created_at_idx
+    on admin_login_events (created_at desc);
+  `;
+
+  await sql`
+    create table if not exists admin_sessions (
+      id uuid primary key default gen_random_uuid(),
+      token_hash text not null unique,
+      created_at timestamptz not null default now(),
+      last_seen_at timestamptz not null default now(),
+      expires_at timestamptz not null,
+      ip text,
+      user_agent text,
+      revoked_at timestamptz
+    );
+  `;
+  await sql`
+    create index if not exists admin_sessions_token_hash_idx
+    on admin_sessions (token_hash);
+  `;
+
   // These tables are queried only via the server-side Postgres connection
   // (which connects as the table owner and bypasses RLS). They're also
   // auto-exposed through Supabase's PostgREST API using the public anon
   // key, so RLS must be enabled with no policies to block that public
   // access path entirely.
-  for (const table of ["products", "reviews", "review_replies", "enquiries", "app_kv"]) {
+  for (const table of [
+    "products",
+    "reviews",
+    "review_replies",
+    "enquiries",
+    "app_kv",
+    "admin_settings",
+    "admin_login_events",
+    "admin_sessions",
+  ]) {
     await sql.unsafe(`alter table ${table} enable row level security;`);
+  }
+
+  const existingSettings = await sql`select 1 from admin_settings where id = true`;
+  if (existingSettings.length === 0) {
+    const bootstrapPassword = process.env.ADMIN_PASSWORD || "change-me";
+    await sql`
+      insert into admin_settings (id, password_hash)
+      values (true, ${hashPassword(bootstrapPassword)})
+    `;
+    console.log("Seeded admin_settings.password_hash from ADMIN_PASSWORD env var.");
   }
 
   console.log("Migration complete.");

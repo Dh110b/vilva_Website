@@ -426,3 +426,124 @@ export async function getOtpHash(): Promise<{ hash: string; expiresAt: number } 
 export async function clearOtp(): Promise<void> {
   await deleteKv(OTP_KV_KEY);
 }
+
+// ---------------------------------------------------------------------------
+// Admin settings, login audit log, sessions
+// ---------------------------------------------------------------------------
+
+export async function getAdminPasswordHash(): Promise<string | undefined> {
+  const rows = await sql`select password_hash from admin_settings where id = true limit 1`;
+  return rows[0]?.password_hash as string | undefined;
+}
+
+export async function setAdminPasswordHash(hash: string): Promise<void> {
+  await sql`
+    insert into admin_settings (id, password_hash, password_updated_at)
+    values (true, ${hash}, now())
+    on conflict (id) do update set password_hash = excluded.password_hash, password_updated_at = now()
+  `;
+}
+
+export type AdminLoginEvent = {
+  id: string;
+  eventType: string;
+  success: boolean;
+  ip: string | null;
+  userAgent: string | null;
+  createdAt: string;
+};
+
+export async function logAdminLoginEvent(event: {
+  eventType: string;
+  success: boolean;
+  ip: string | null;
+  userAgent: string | null;
+}): Promise<void> {
+  await sql`
+    insert into admin_login_events (event_type, success, ip, user_agent)
+    values (${event.eventType}, ${event.success}, ${event.ip}, ${event.userAgent})
+  `;
+  await sql`delete from admin_login_events where created_at < now() - interval '3 months'`;
+}
+
+export async function getAdminLoginEvents(sinceMonths = 3): Promise<AdminLoginEvent[]> {
+  const rows = await sql`
+    select * from admin_login_events
+    where created_at >= now() - (${sinceMonths}::text || ' months')::interval
+    order by created_at desc
+  `;
+  return rows.map((row) => ({
+    id: row.id,
+    eventType: row.event_type,
+    success: row.success,
+    ip: row.ip ?? null,
+    userAgent: row.user_agent ?? null,
+    createdAt: new Date(row.created_at).toISOString(),
+  }));
+}
+
+export type AdminSession = {
+  id: string;
+  createdAt: string;
+  lastSeenAt: string;
+  expiresAt: string;
+  ip: string | null;
+  userAgent: string | null;
+};
+
+export async function createAdminSession(input: {
+  tokenHash: string;
+  expiresAt: Date;
+  ip: string | null;
+  userAgent: string | null;
+}): Promise<string> {
+  const rows = await sql`
+    insert into admin_sessions (token_hash, expires_at, ip, user_agent)
+    values (${input.tokenHash}, ${input.expiresAt.toISOString()}, ${input.ip}, ${input.userAgent})
+    returning id
+  `;
+  return rows[0].id as string;
+}
+
+export async function getAdminSessionByTokenHash(
+  tokenHash: string
+): Promise<AdminSession | undefined> {
+  const rows = await sql`
+    select * from admin_sessions
+    where token_hash = ${tokenHash} and revoked_at is null and expires_at > now()
+    limit 1
+  `;
+  return rows[0] ? rowToAdminSession(rows[0]) : undefined;
+}
+
+export async function touchAdminSession(id: string): Promise<void> {
+  await sql`
+    update admin_sessions set last_seen_at = now()
+    where id = ${id} and last_seen_at < now() - interval '60 seconds'
+  `;
+}
+
+export async function listActiveAdminSessions(): Promise<AdminSession[]> {
+  const rows = await sql`
+    select * from admin_sessions
+    where revoked_at is null and expires_at > now()
+    order by last_seen_at desc
+  `;
+  return rows.map(rowToAdminSession);
+}
+
+export async function revokeAdminSession(id: string): Promise<void> {
+  await sql`update admin_sessions set revoked_at = now() where id = ${id}`;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function rowToAdminSession(row: any): AdminSession {
+  return {
+    id: row.id,
+    createdAt: new Date(row.created_at).toISOString(),
+    lastSeenAt: new Date(row.last_seen_at).toISOString(),
+    expiresAt: new Date(row.expires_at).toISOString(),
+    ip: row.ip ?? null,
+    userAgent: row.user_agent ?? null,
+  };
+}

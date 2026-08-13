@@ -15,7 +15,7 @@ export default async function ProductPage({
   if (!product) notFound();
   const reviews = await getReviews(product.id);
   const cookieStore = await cookies();
-  const isAuthed = isValidSessionToken(cookieStore.get(ADMIN_COOKIE_NAME)?.value);
+  const isAuthed = !!(await isValidSessionToken(cookieStore.get(ADMIN_COOKIE_NAME)?.value));
 
   return (
     <ProductDetailPage

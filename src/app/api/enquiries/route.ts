@@ -5,7 +5,7 @@ import { sendEnquiryEmail } from "@/lib/mail";
 
 export async function GET(req: NextRequest) {
   const token = req.cookies.get(ADMIN_COOKIE_NAME)?.value;
-  if (!isValidSessionToken(token)) {
+  if (!(await isValidSessionToken(token))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   return NextResponse.json(await getEnquiries());

@@ -4,7 +4,7 @@ import { deleteStorageFiles } from "@/lib/supabase";
 
 export async function DELETE(req: NextRequest) {
   const token = req.cookies.get(ADMIN_COOKIE_NAME)?.value;
-  if (!isValidSessionToken(token)) {
+  if (!(await isValidSessionToken(token))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

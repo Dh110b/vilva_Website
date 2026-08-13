@@ -15,7 +15,7 @@ export async function POST(
   }
 
   const token = req.cookies.get(ADMIN_COOKIE_NAME)?.value;
-  const isOwner = isValidSessionToken(token);
+  const isOwner = !!(await isValidSessionToken(token));
 
   const reply = await addReviewReply(id, { name, message, isOwner });
   if (!reply) {
