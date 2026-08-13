@@ -38,7 +38,7 @@ export default async function Home() {
     <div className="flex w-full flex-col">
       <HomeHero />
 
-      <section className="flex items-center justify-center border-y py-10">
+      <section className="flex items-center justify-center py-10">
         <ScrollVelocityRow baseVelocity={3} scrollReactivity={false}>
           {scrollWords.map((word) => (
             <span className="mx-6 text-2xl font-bold text-blue-900 dark:text-blue-300" key={word}>
