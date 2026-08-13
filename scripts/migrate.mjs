@@ -88,6 +88,15 @@ async function main() {
     );
   `;
 
+  // These tables are queried only via the server-side Postgres connection
+  // (which connects as the table owner and bypasses RLS). They're also
+  // auto-exposed through Supabase's PostgREST API using the public anon
+  // key, so RLS must be enabled with no policies to block that public
+  // access path entirely.
+  for (const table of ["products", "reviews", "review_replies", "enquiries", "app_kv"]) {
+    await sql.unsafe(`alter table ${table} enable row level security;`);
+  }
+
   console.log("Migration complete.");
 }
 
