@@ -87,6 +87,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   src={product.images[currentImageIndex]}
                   alt={`${product.name} image ${currentImageIndex + 1}`}
                   fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
                   className="object-contain"
                 />
               ) : (
@@ -130,7 +131,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                       : "border-transparent hover:border-muted-foreground/30"
                   )}
                 >
-                  <Image src={img} alt="" fill className="object-contain" />
+                  <Image src={img} alt="" fill sizes="20vw" className="object-contain" />
                 </button>
               ))}
             </div>

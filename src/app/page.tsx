@@ -66,7 +66,7 @@ export default async function Home() {
           {problems.map((problem) => (
             <div
               key={problem}
-              className="whitespace-nowrap rounded-lg border border-accent/40 bg-accent/30 p-4 text-center text-xl font-bold text-blue-900 shadow-lg backdrop-blur-md dark:border-accent/30 dark:bg-accent/20 dark:text-blue-300"
+              className="rounded-lg border border-accent/40 bg-accent/30 p-4 text-center text-lg font-bold text-blue-900 shadow-lg backdrop-blur-md sm:text-xl dark:border-accent/30 dark:bg-accent/20 dark:text-blue-300"
             >
               {problem}
             </div>

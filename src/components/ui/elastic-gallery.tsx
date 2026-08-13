@@ -88,7 +88,7 @@ function ElasticGallery({ items }: { items: ElasticItemProps[] }) {
                 </div>
 
                 {/* Title */}
-                <h3 className="text-2xl font-black uppercase leading-none text-white md:text-5xl">
+                <h3 className="text-xl leading-tight font-black uppercase text-white [text-shadow:0_1px_6px_rgba(0,0,0,0.6)] sm:text-2xl md:text-5xl md:leading-none">
                   {item.title}
                 </h3>
 
@@ -116,9 +116,9 @@ function ElasticGallery({ items }: { items: ElasticItemProps[] }) {
                   {item.title}
                 </span>
 
-                {/* Mobile: Horizontal ID/Label */}
-                <span className="block text-xs font-bold text-white md:hidden">
-                  {item.id}
+                {/* Mobile: Horizontal Label */}
+                <span className="block max-w-[85vw] truncate px-4 text-center text-xs font-bold text-white md:hidden">
+                  {item.title}
                 </span>
               </div>
             </div>

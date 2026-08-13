@@ -473,7 +473,7 @@ function FieldRow({
       className="rounded-lg border bg-card"
       whileDrag={{ scale: 1.02, boxShadow: "0 8px 24px rgba(0,0,0,0.15)" }}
     >
-      <div className="flex items-center gap-3 p-3">
+      <div className="flex flex-wrap items-center gap-3 p-3">
         <button
           type="button"
           onPointerDown={(e) => dragControls.start(e)}
@@ -483,7 +483,7 @@ function FieldRow({
           <GripVertical className="size-4" />
         </button>
 
-        <div className="flex-1 space-y-1.5">
+        <div className="min-w-[10rem] flex-1 space-y-1.5">
           <Label htmlFor={`label-${field.key}`} className="text-xs text-muted-foreground">
             Field label (title){field.custom ? " · custom" : ""}
           </Label>

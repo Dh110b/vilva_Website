@@ -153,7 +153,7 @@ export function ProductForm({ product }: { product?: Product }) {
         <Input id="images" type="file" accept="image/*" multiple onChange={handleImageUpload} />
         {uploadingImages && <p className="text-sm text-muted-foreground">Uploading...</p>}
         {images.length > 0 && (
-          <div className="grid grid-cols-4 gap-2 mt-2">
+          <div className="grid grid-cols-3 gap-2 mt-2 sm:grid-cols-4">
             {images.map((img) => (
               <div key={img} className="relative aspect-square bg-muted rounded overflow-hidden group">
                 <Image src={img} alt="" fill className="object-cover" />
@@ -243,7 +243,7 @@ export function ProductForm({ product }: { product?: Product }) {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <div className="flex items-center gap-1">
               <Label htmlFor="motorPhaseType">Motor Phase Type</Label>
@@ -295,7 +295,7 @@ export function ProductForm({ product }: { product?: Product }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <div className="flex items-center gap-1">
               <Label htmlFor="motorType">Motor Type</Label>
