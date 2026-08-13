@@ -46,6 +46,7 @@ export function AdminEnquiriesBrowser({ enquiries: initial }: { enquiries: Enqui
   const [productFilter, setProductFilter] = useState("all");
   const [sort, setSort] = useState<SortOption>("newest");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const products = useMemo(
     () => Array.from(new Set(enquiries.map((e) => e.productName))).sort(),
@@ -88,6 +89,20 @@ export function AdminEnquiriesBrowser({ enquiries: initial }: { enquiries: Enqui
       toast.error("Failed to update status");
     } finally {
       setUpdatingId(null);
+    }
+  }
+
+  async function removeEnquiry(id: string) {
+    setDeletingId(id);
+    try {
+      const res = await fetch(`/api/enquiries/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed");
+      setEnquiries((prev) => prev.filter((e) => e.id !== id));
+      toast.success("Enquiry deleted");
+    } catch {
+      toast.error("Failed to delete enquiry");
+    } finally {
+      setDeletingId(null);
     }
   }
 
@@ -307,7 +322,19 @@ export function AdminEnquiriesBrowser({ enquiries: initial }: { enquiries: Enqui
                         </p>
                       </div>
 
-                      <DialogFooter>
+                      <DialogFooter className="sm:justify-between">
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          disabled={deletingId === enquiry.id}
+                          onClick={() => {
+                            if (confirm("Delete this enquiry? This cannot be undone.")) {
+                              removeEnquiry(enquiry.id);
+                            }
+                          }}
+                        >
+                          {deletingId === enquiry.id ? "Deleting..." : "Delete"}
+                        </Button>
                         <DialogClose render={<Button variant="outline" />}>Close</DialogClose>
                       </DialogFooter>
                     </DialogContent>

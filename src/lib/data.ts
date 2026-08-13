@@ -225,6 +225,11 @@ export async function updateEnquiryStatus(
   return rows[0] ? rowToEnquiry(rows[0]) : undefined;
 }
 
+export async function deleteEnquiry(id: string): Promise<boolean> {
+  const rows = await sql`delete from enquiries where id = ${id} returning id`;
+  return rows.length > 0;
+}
+
 // ---------------------------------------------------------------------------
 // Reviews
 // ---------------------------------------------------------------------------

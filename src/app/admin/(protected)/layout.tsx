@@ -15,6 +15,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Link href="/admin/enquiry-form" className="font-medium hover:underline">
             Send Enquiry Form
           </Link>
+          <Link href="/admin/storage" className="font-medium hover:underline">
+            Storage
+          </Link>
         </nav>
         <LogoutButton />
       </div>
