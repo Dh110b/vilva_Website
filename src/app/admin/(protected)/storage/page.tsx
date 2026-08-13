@@ -6,16 +6,13 @@ export default async function AdminStoragePage() {
     usedBytes: 0,
     fileCount: 0,
     limitBytes: 0,
+    files: [],
   }));
 
   return (
     <div>
       <h1 className="text-2xl font-bold mb-6">Storage</h1>
-      <AdminStorageUsage
-        usedBytes={storageUsage.usedBytes}
-        limitBytes={storageUsage.limitBytes}
-        fileCount={storageUsage.fileCount}
-      />
+      <AdminStorageUsage limitBytes={storageUsage.limitBytes} files={storageUsage.files} />
     </div>
   );
 }

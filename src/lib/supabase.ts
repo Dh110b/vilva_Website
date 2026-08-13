@@ -21,10 +21,16 @@ export const UPLOADS_BUCKET = "uploads";
 export const STORAGE_LIMIT_BYTES =
   Number(process.env.SUPABASE_STORAGE_LIMIT_MB || 1024) * 1024 * 1024;
 
+export type StorageFile = {
+  name: string;
+  sizeBytes: number;
+  updatedAt: string | null;
+  url: string;
+};
+
 export async function getStorageUsage() {
   const supabase = getSupabaseAdmin();
-  let usedBytes = 0;
-  let fileCount = 0;
+  const files: StorageFile[] = [];
   let offset = 0;
   const limit = 1000;
 
@@ -39,8 +45,12 @@ export async function getStorageUsage() {
     for (const item of data) {
       const size = (item.metadata as { size?: number } | null)?.size;
       if (typeof size === "number") {
-        usedBytes += size;
-        fileCount += 1;
+        files.push({
+          name: item.name,
+          sizeBytes: size,
+          updatedAt: item.updated_at ?? null,
+          url: supabase.storage.from(UPLOADS_BUCKET).getPublicUrl(item.name).data.publicUrl,
+        });
       }
     }
 
@@ -48,9 +58,18 @@ export async function getStorageUsage() {
     offset += limit;
   }
 
+  files.sort((a, b) => b.sizeBytes - a.sizeBytes);
+
   return {
-    usedBytes,
-    fileCount,
+    usedBytes: files.reduce((sum, f) => sum + f.sizeBytes, 0),
+    fileCount: files.length,
     limitBytes: STORAGE_LIMIT_BYTES,
+    files,
   };
+}
+
+export async function deleteStorageFiles(names: string[]) {
+  const supabase = getSupabaseAdmin();
+  const { error } = await supabase.storage.from(UPLOADS_BUCKET).remove(names);
+  if (error) throw error;
 }
