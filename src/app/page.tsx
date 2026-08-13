@@ -42,11 +42,11 @@ export default async function Home() {
 
       <section className="container mx-auto px-4 py-10 text-center">
         <h2 className="text-3xl font-bold mb-6">Tired of...</h2>
-        <div className="mx-auto grid max-w-3xl gap-3 sm:grid-cols-2">
+        <div className="mx-auto flex max-w-6xl flex-col gap-3">
           {problems.map((problem) => (
             <div
               key={problem}
-              className="rounded-lg border border-accent/40 bg-accent/30 p-4 text-left text-lg text-accent-foreground shadow-lg backdrop-blur-md dark:border-accent/30 dark:bg-accent/20"
+              className="whitespace-nowrap rounded-lg border border-accent/40 bg-accent/30 p-4 text-left text-lg text-accent-foreground shadow-lg backdrop-blur-md dark:border-accent/30 dark:bg-accent/20"
             >
               {problem}
             </div>
