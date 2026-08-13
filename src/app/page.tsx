@@ -19,7 +19,13 @@ const problems = [
   "Voltage fluctuations damaging your pump?",
 ];
 
-const stopItems = ["Tank overflow", "Dry running of your motor", "Motor running in high/low voltage"];
+const stopItems = [
+  "Tank overflow",
+  "Dry running of your motor",
+  "Motor running in high/low voltage",
+  "Motor winding failure",
+  "Manpower Stress",
+];
 const saveItems = ["Time", "Water", "Electricity", "Manpower & energy", "Your bore/sump motor pump"];
 
 export default async function Home() {
