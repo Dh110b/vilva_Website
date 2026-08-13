@@ -20,6 +20,7 @@ interface FooterProps {
     phone?: string
     email?: string
     address?: string
+    gstin?: string
   }
   copyright: {
     text: string
@@ -111,6 +112,7 @@ export function Footer({
                   </div>
                 )}
                 {contact.address && <div className="max-w-xs">{contact.address}</div>}
+                {contact.gstin && <div>GSTIN: {contact.gstin}</div>}
               </div>
             )}
             <div className="mt-4 text-sm leading-6 text-foreground/80 whitespace-nowrap">

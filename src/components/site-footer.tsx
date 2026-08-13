@@ -20,6 +20,7 @@ export function SiteFooter() {
         email: "manjushreeenterprisesblr@gmail.com",
         address:
           "#163, Vinakaya Layout, Ullal Main Road, Behind Amma Asharam, Bengaluru, Karnataka, 560056",
+        gstin: "29AZRPV9644D1ZG",
       }}
       copyright={{
         text: "© 2009 Vilva",

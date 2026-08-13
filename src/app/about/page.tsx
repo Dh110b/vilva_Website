@@ -124,6 +124,17 @@ export default function AboutPage() {
 
         <section>
           <h2 className="text-xl font-semibold text-foreground mb-3">
+            Registered Business Details
+          </h2>
+          <p>
+            Vilva is operated under M/s Manjushree Enterprises, a GST-registered
+            business (GSTIN: <span className="font-medium text-foreground">29AZRPV9644D1ZG</span>),
+            based at #163, Vinayaka Layout, Bengaluru, Karnataka.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold text-foreground mb-3">
             Get in Touch
           </h2>
           <p>
