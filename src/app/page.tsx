@@ -23,7 +23,7 @@ const stopItems = ["Tank overflow", "Dry running of your motor", "Motor running 
 const saveItems = ["Time", "Water", "Electricity", "Manpower & energy", "Your bore/sump motor pump"];
 
 export default async function Home() {
-  const featuredProducts = (await getProducts()).slice(0, 8);
+  const featuredProducts = (await getProducts()).slice(0, 5);
 
   return (
     <div className="flex w-full flex-col">
