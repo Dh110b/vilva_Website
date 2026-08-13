@@ -183,8 +183,8 @@ export function AdminEnquiriesBrowser({ enquiries: initial }: { enquiries: Enqui
             <TableBody>
               {filtered.map((enquiry) => {
                 const createdAt = new Date(enquiry.createdAt);
-                const dateLabel = createdAt.toLocaleDateString();
-                const timeLabel = createdAt.toLocaleTimeString([], {
+                const dateLabel = createdAt.toLocaleDateString("en-US");
+                const timeLabel = createdAt.toLocaleTimeString("en-US", {
                   hour: "2-digit",
                   minute: "2-digit",
                 });
