@@ -41,18 +41,18 @@ export default async function Home() {
       </section>
 
       <section className="container mx-auto px-4 py-10 text-center">
-        <h2 className="text-2xl font-bold mb-6">Tired of...</h2>
+        <h2 className="text-3xl font-bold mb-6">Tired of...</h2>
         <div className="mx-auto grid max-w-3xl gap-3 sm:grid-cols-2">
           {problems.map((problem) => (
             <div
               key={problem}
-              className="rounded-lg border border-accent/40 bg-accent/30 p-4 text-left text-accent-foreground shadow-lg backdrop-blur-md dark:border-accent/30 dark:bg-accent/20"
+              className="rounded-lg border border-accent/40 bg-accent/30 p-4 text-left text-lg text-accent-foreground shadow-lg backdrop-blur-md dark:border-accent/30 dark:bg-accent/20"
             >
               {problem}
             </div>
           ))}
         </div>
-        <p className="mx-auto mt-6 max-w-2xl text-lg font-medium">
+        <p className="mx-auto mt-6 max-w-2xl text-xl font-medium">
           VILVA&rsquo;s Automatic Water Level Controller handles it all — automatically.
         </p>
       </section>
@@ -60,7 +60,7 @@ export default async function Home() {
       <section className="py-10">
         <div className="container mx-auto grid max-w-4xl gap-6 px-4 sm:grid-cols-2">
           <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-6 shadow-lg backdrop-blur-md dark:border-destructive/20 dark:bg-destructive/10">
-            <h3 className="mb-4 text-xl font-bold text-destructive">STOP</h3>
+            <h3 className="mb-4 text-3xl font-bold text-destructive">STOP</h3>
             <ul className="space-y-3">
               {stopItems.map((item) => (
                 <li key={item} className="flex items-center gap-2">
@@ -71,7 +71,7 @@ export default async function Home() {
             </ul>
           </div>
           <div className="rounded-lg border border-success/30 bg-success/10 p-6 shadow-lg backdrop-blur-md dark:border-success/20 dark:bg-success/10">
-            <h3 className="mb-4 text-xl font-bold text-success">SAVE</h3>
+            <h3 className="mb-4 text-3xl font-bold text-success">SAVE</h3>
             <ul className="space-y-3">
               {saveItems.map((item) => (
                 <li key={item} className="flex items-center gap-2">
