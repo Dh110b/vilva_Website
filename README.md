@@ -14,7 +14,8 @@ Product showcase and enquiry site for **Vilva**, a MicroComputer Automatic Water
   - Manage product reviews and replies.
 - **Two-factor admin login** — password, then a one-time code emailed via [Resend](https://resend.com).
 - **Underwater-themed UI** — animated background with glass/frosted panels throughout, built from the Vilva logo's color palette.
-- Enquiry email notifications, contact page, and static about/privacy/terms pages.
+- Enquiry email notifications, contact page, and a static about page.
+- Vercel Analytics and Speed Insights.
 
 ## Tech Stack
 
@@ -74,7 +75,7 @@ Go to `/admin/login`, enter `ADMIN_PASSWORD`, then enter the 6-digit code sent t
 
 ## Data Storage
 
-All content (products, enquiries, reviews, dropdown option lists, Send Enquiry form config, admin login OTPs) lives in Postgres tables (`products`, `enquiries`, `reviews`, `review_replies`, plus a generic `app_kv` key-value table for small config blobs) — see `scripts/migrate.mjs` for the schema. Uploaded images (product photos, review photos) go to a public Supabase Storage bucket named `uploads`.
+All content (products, enquiries, reviews, dropdown option lists, Send Enquiry form config, admin login OTPs) lives in Postgres tables (`products`, `enquiries`, `reviews`, `review_replies`, plus a generic `app_kv` key-value table for small config blobs) — see `scripts/migrate.mjs` for the schema. Row Level Security is enabled on all tables to block public PostgREST access; the app reads/writes via the pooled Postgres connection instead. Uploaded images (product photos, review photos) go to a public Supabase Storage bucket named `uploads`.
 
 ## Project Structure
 
