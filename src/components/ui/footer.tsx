@@ -37,7 +37,7 @@ export function Footer({
   copyright,
 }: FooterProps) {
   return (
-    <footer className="pb-6 pt-8 lg:pb-8 lg:pt-10 border-t border-white/30 bg-white/15 backdrop-blur-md shadow-lg dark:border-white/10 dark:bg-white/5">
+    <footer className="pb-6 pt-8 lg:pb-8 lg:pt-10 border-t border-foreground/25 bg-white/15 backdrop-blur-md shadow-lg dark:border-white/20 dark:bg-white/5">
       <div className="px-4 lg:px-8">
         {socialLinks.length > 0 && (
           <div className="flex md:justify-end">

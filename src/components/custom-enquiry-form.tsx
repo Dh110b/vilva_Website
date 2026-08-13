@@ -70,7 +70,7 @@ export function CustomEnquiryForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 max-w-xl rounded-lg border border-white/30 bg-white/10 p-6 shadow-lg backdrop-blur-md dark:border-white/10 dark:bg-white/5"
+      className="space-y-4 max-w-xl rounded-lg border border-foreground/25 bg-white/10 p-6 shadow-lg backdrop-blur-md dark:border-white/20 dark:bg-white/5"
     >
       <div className="space-y-2">
         <Label htmlFor="name">Name</Label>

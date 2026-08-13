@@ -28,7 +28,7 @@ function ElasticGallery({ items }: { items: ElasticItemProps[] }) {
             onMouseEnter={() => setActiveId(item.id)}
             onClick={() => setActiveId(item.id)} // Touch support
             className={cn(
-              "relative block cursor-pointer overflow-hidden rounded-2xl border border-white/30 bg-white/10 shadow-lg backdrop-blur-md dark:border-white/10 dark:bg-white/5",
+              "relative block cursor-pointer overflow-hidden rounded-2xl border border-foreground/25 bg-white/10 shadow-lg backdrop-blur-md dark:border-white/20 dark:bg-white/5",
               // Layout & Flex Transition
               "transition-[flex,filter] duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]",
               // Flex Logic:
@@ -82,7 +82,7 @@ function ElasticGallery({ items }: { items: ElasticItemProps[] }) {
               >
                 {/* Category Tag */}
                 <div className="flex items-center gap-2">
-                  <span className="rounded-full border border-white/30 bg-white/10 px-2 py-1 text-[10px] font-medium uppercase tracking-wider text-white backdrop-blur-md md:px-3 md:text-xs">
+                  <span className="rounded-full border border-white/50 bg-white/10 px-2 py-1 text-[10px] font-medium uppercase tracking-wider text-white backdrop-blur-md md:px-3 md:text-xs">
                     {item.category}
                   </span>
                 </div>

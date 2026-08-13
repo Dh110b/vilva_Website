@@ -50,7 +50,7 @@ export function AdminStorageUsage({
 
   return (
     <div className="space-y-6">
-      <Card className="border-white/30 bg-white/10 shadow-lg backdrop-blur-md dark:border-white/10 dark:bg-white/5">
+      <Card className="border-foreground/25 bg-white/10 shadow-lg backdrop-blur-md dark:border-white/20 dark:bg-white/5">
         <CardHeader>
           <CardTitle>Storage</CardTitle>
         </CardHeader>
@@ -71,7 +71,7 @@ export function AdminStorageUsage({
         </CardContent>
       </Card>
 
-      <Card className="border-white/30 bg-white/10 shadow-lg backdrop-blur-md dark:border-white/10 dark:bg-white/5">
+      <Card className="border-foreground/25 bg-white/10 shadow-lg backdrop-blur-md dark:border-white/20 dark:bg-white/5">
         <CardHeader>
           <CardTitle>What&apos;s taking up space</CardTitle>
         </CardHeader>

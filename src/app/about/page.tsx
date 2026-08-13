@@ -7,7 +7,7 @@ export default function AboutPage() {
     <div className="container mx-auto px-4 py-12 max-w-3xl">
       <h1 className="text-3xl font-bold mb-10">About Us</h1>
 
-      <div className="space-y-10 text-muted-foreground">
+      <div className="space-y-10 rounded-lg border border-foreground/25 bg-white/10 p-6 text-muted-foreground shadow-lg backdrop-blur-md dark:border-white/20 dark:bg-white/5">
         <section>
           <h2 className="text-xl font-semibold text-foreground mb-3">
             Profile of the Promoter

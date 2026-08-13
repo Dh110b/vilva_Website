@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "motion/react"
 import { Menu, X } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -22,7 +23,7 @@ const Navbar1 = ({ isAuthed = false }: { isAuthed?: boolean }) => {
 
   return (
     <div className="sticky top-0 z-40 flex justify-center w-full py-3 px-4">
-      <div className="flex items-center justify-between px-5 py-1.5 border border-white/30 bg-white/10 backdrop-blur-md rounded-full shadow-lg w-full max-w-6xl relative z-10 dark:border-white/10 dark:bg-white/5">
+      <div className="flex items-center justify-between px-5 py-1.5 border border-foreground/25 bg-white/10 backdrop-blur-md rounded-full shadow-lg w-full max-w-6xl relative z-10 dark:border-white/20 dark:bg-white/5">
         <div className="flex items-center shrink-0">
           <motion.div
             initial={{ scale: 0.8 }}
@@ -63,26 +64,31 @@ const Navbar1 = ({ isAuthed = false }: { isAuthed?: boolean }) => {
           ))}
         </nav>
 
-        {/* Desktop CTA Button */}
-        <motion.div
-          className="hidden md:block shrink-0"
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.3, delay: 0.2 }}
-          whileHover={{ scale: 1.05 }}
-        >
-          <Link
-            href="/admin"
-            className="inline-flex items-center justify-center px-5 py-2 text-sm text-primary-foreground bg-primary rounded-full hover:bg-primary/90 transition-colors"
+        {/* Desktop CTA + Theme Toggle */}
+        <div className="hidden md:flex items-center gap-2 shrink-0">
+          <ThemeToggle className="flex items-center justify-center h-9 w-9 rounded-full text-foreground hover:bg-foreground/10 transition-colors" />
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3, delay: 0.2 }}
+            whileHover={{ scale: 1.05 }}
           >
-            {isAuthed ? "Admin" : "Login"}
-          </Link>
-        </motion.div>
+            <Link
+              href="/admin"
+              className="inline-flex items-center justify-center px-5 py-2 text-sm text-primary-foreground bg-primary rounded-full hover:bg-primary/90 transition-colors"
+            >
+              {isAuthed ? "Admin" : "Login"}
+            </Link>
+          </motion.div>
+        </div>
 
         {/* Mobile Menu Button */}
-        <motion.button className="md:hidden flex items-center" onClick={toggleMenu} whileTap={{ scale: 0.9 }}>
-          <Menu className="h-6 w-6 text-foreground" />
-        </motion.button>
+        <div className="md:hidden flex items-center gap-1">
+          <ThemeToggle className="flex items-center justify-center h-9 w-9 rounded-full text-foreground hover:bg-foreground/10 transition-colors" />
+          <motion.button className="flex items-center" onClick={toggleMenu} whileTap={{ scale: 0.9 }}>
+            <Menu className="h-6 w-6 text-foreground" />
+          </motion.button>
+        </div>
       </div>
 
       {/* Mobile Menu Overlay */}

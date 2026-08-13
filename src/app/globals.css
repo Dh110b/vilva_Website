@@ -76,7 +76,7 @@
   --secondary: oklch(0.66 0.14 229);
   --secondary-foreground: oklch(0.2 0.04 262);
   --muted: oklch(0.95 0.01 250);
-  --muted-foreground: oklch(0.45 0.03 262);
+  --muted-foreground: oklch(0.25 0.03 262);
   --accent: oklch(0.94 0.04 65);
   --accent-foreground: oklch(0.35 0.1 45);
   --destructive: oklch(0.55 0.22 25);
@@ -88,8 +88,8 @@
   --tertiary: oklch(0.42 0.22 355);
   --tertiary-foreground: oklch(0.99 0.005 250);
   --overlay: oklch(0.2 0.04 262 / 55%);
-  --border: oklch(0.9 0.015 250);
-  --input: oklch(0.9 0.015 250);
+  --border: oklch(0.78 0.02 262);
+  --input: oklch(0.78 0.02 262);
   --ring: oklch(0.38 0.13 262);
   --chart-1: oklch(0.38 0.13 262);
   --chart-2: oklch(0.66 0.14 229);
@@ -103,7 +103,7 @@
   --sidebar-primary-foreground: oklch(0.99 0.005 250);
   --sidebar-accent: oklch(0.94 0.04 65);
   --sidebar-accent-foreground: oklch(0.35 0.1 45);
-  --sidebar-border: oklch(0.9 0.015 250);
+  --sidebar-border: oklch(0.78 0.02 262);
   --sidebar-ring: oklch(0.38 0.13 262);
 }
 
@@ -119,7 +119,7 @@
   --secondary: oklch(0.55 0.15 262);
   --secondary-foreground: oklch(0.97 0.01 250);
   --muted: oklch(0.25 0.025 262);
-  --muted-foreground: oklch(0.72 0.03 262);
+  --muted-foreground: oklch(0.88 0.03 262);
   --accent: oklch(0.32 0.07 60);
   --accent-foreground: oklch(0.92 0.04 65);
   --destructive: oklch(0.68 0.19 25);
@@ -131,8 +131,8 @@
   --tertiary: oklch(0.62 0.2 355);
   --tertiary-foreground: oklch(0.14 0.02 262);
   --overlay: oklch(0.1 0.02 262 / 65%);
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 16%);
+  --border: oklch(1 0 0 / 24%);
+  --input: oklch(1 0 0 / 28%);
   --ring: oklch(0.68 0.13 229);
   --chart-1: oklch(0.68 0.13 229);
   --chart-2: oklch(0.55 0.15 262);
@@ -145,7 +145,7 @@
   --sidebar-primary-foreground: oklch(0.14 0.02 262);
   --sidebar-accent: oklch(0.32 0.07 60);
   --sidebar-accent-foreground: oklch(0.92 0.04 65);
-  --sidebar-border: oklch(1 0 0 / 12%);
+  --sidebar-border: oklch(1 0 0 / 24%);
   --sidebar-ring: oklch(0.68 0.13 229);
 }
 

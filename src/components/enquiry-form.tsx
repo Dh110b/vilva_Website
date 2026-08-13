@@ -67,7 +67,7 @@ export function EnquiryForm({ productId, productName }: { productId: string; pro
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger render={<Button size="lg" />}>Send Enquiry</DialogTrigger>
-      <DialogContent className="max-h-[90vh] overflow-y-auto border border-white/30 bg-white/10 backdrop-blur-md dark:border-white/10 dark:bg-white/5">
+      <DialogContent className="max-h-[90vh] overflow-y-auto border border-foreground/25 bg-white/80 backdrop-blur-md dark:border-white/20 dark:bg-white/80">
         <DialogHeader>
           <DialogTitle>Enquire about {productName}</DialogTitle>
         </DialogHeader>

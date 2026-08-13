@@ -84,7 +84,7 @@ export default function AdminLoginPage() {
 
   return (
     <div className="container mx-auto px-4 py-16 max-w-sm">
-      <Card className="border-white/30 bg-white/10 shadow-lg backdrop-blur-md dark:border-white/10 dark:bg-white/5">
+      <Card className="border-foreground/25 bg-white/10 shadow-lg backdrop-blur-md dark:border-white/20 dark:bg-white/5">
         <CardHeader>
           <CardTitle>Login</CardTitle>
           {step === "otp" && (

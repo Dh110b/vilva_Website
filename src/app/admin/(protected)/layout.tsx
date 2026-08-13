@@ -5,7 +5,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div>
       <div className="sticky top-0 z-40 flex justify-center w-full py-3 px-4">
-        <div className="flex items-center justify-between gap-4 px-5 py-2 border border-white/30 bg-white/10 backdrop-blur-md rounded-full shadow-lg w-full max-w-6xl dark:border-white/10 dark:bg-white/5">
+        <div className="flex items-center justify-between gap-4 px-5 py-2 border border-foreground/25 bg-white/10 backdrop-blur-md rounded-full shadow-lg w-full max-w-6xl dark:border-white/20 dark:bg-white/5">
           <Link href="/admin" className="font-semibold text-lg shrink-0 mr-2">
             Vilva Admin
           </Link>

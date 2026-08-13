@@ -44,8 +44,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 }) => {
   const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
   const [showDemo, setShowDemo] = React.useState(false);
+  const [descriptionExpanded, setDescriptionExpanded] = React.useState(false);
   const hasImages = product.images.length > 0;
   const hasMultipleImages = product.images.length > 1;
+  const descriptionLimit = 300;
+  const isDescriptionLong = product.description.length > descriptionLimit;
 
   const goToPrevImage = () =>
     setCurrentImageIndex((i) => (i - 1 + product.images.length) % product.images.length);
@@ -161,8 +164,18 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
           {/* Description */}
           <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
-            {product.description}
+            {isDescriptionLong && !descriptionExpanded
+              ? `${product.description.slice(0, descriptionLimit).trimEnd()}…`
+              : product.description}
           </p>
+          {isDescriptionLong && (
+            <button
+              onClick={() => setDescriptionExpanded((v) => !v)}
+              className="mt-1 w-fit text-sm font-medium text-primary hover:underline"
+            >
+              {descriptionExpanded ? "Read less" : "Read more"}
+            </button>
+          )}
         </div>
       </main>
 

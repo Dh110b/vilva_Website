@@ -83,7 +83,7 @@ export function AdminSettings({
 
   return (
     <div className="space-y-6">
-      <Card className="border-white/30 bg-white/10 shadow-lg backdrop-blur-md dark:border-white/10 dark:bg-white/5">
+      <Card className="border-foreground/25 bg-white/10 shadow-lg backdrop-blur-md dark:border-white/20 dark:bg-white/5">
         <CardHeader>
           <CardTitle>Change password</CardTitle>
         </CardHeader>
@@ -128,7 +128,7 @@ export function AdminSettings({
         </CardContent>
       </Card>
 
-      <Card className="border-white/30 bg-white/10 shadow-lg backdrop-blur-md dark:border-white/10 dark:bg-white/5">
+      <Card className="border-foreground/25 bg-white/10 shadow-lg backdrop-blur-md dark:border-white/20 dark:bg-white/5">
         <CardHeader>
           <CardTitle>Active devices</CardTitle>
         </CardHeader>
@@ -180,7 +180,7 @@ export function AdminSettings({
         </CardContent>
       </Card>
 
-      <Card className="border-white/30 bg-white/10 shadow-lg backdrop-blur-md dark:border-white/10 dark:bg-white/5">
+      <Card className="border-foreground/25 bg-white/10 shadow-lg backdrop-blur-md dark:border-white/20 dark:bg-white/5">
         <CardHeader>
           <CardTitle>Login history (last 3 months)</CardTitle>
         </CardHeader>

@@ -63,7 +63,7 @@ export const AnimatedHero = ({
   className,
 }: AnimatedHeroProps) => {
   const glassButtonClassName = backgroundImageUrl
-    ? "bg-white/10 backdrop-blur-sm border border-white/20 text-primary-foreground hover:bg-white/20 transition-colors"
+    ? "bg-white/10 backdrop-blur-sm border border-white/40 text-primary-foreground hover:bg-white/20 transition-colors"
     : "";
 
   return (

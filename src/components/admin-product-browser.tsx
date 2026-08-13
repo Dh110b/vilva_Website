@@ -3,6 +3,8 @@
 import { useMemo, useState } from "react";
 import { SlidersHorizontal, X } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -14,11 +16,23 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { DeleteProductButton } from "@/components/delete-product-button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { toast } from "sonner";
 import type { Product } from "@/lib/data";
 import { useOptionLists } from "@/hooks/use-option-lists";
 
-export function AdminProductBrowser({ products }: { products: Product[] }) {
+export function AdminProductBrowser({ products: initial }: { products: Product[] }) {
+  const router = useRouter();
+  const [products, setProducts] = useState(initial);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [motorPhaseType, setMotorPhaseType] = useState("any");
   const [starterType, setStarterType] = useState("any");
@@ -66,6 +80,21 @@ export function AdminProductBrowser({ products }: { products: Product[] }) {
     unitType !== "any" ||
     numberOfMotors ||
     numberOfTanks;
+
+  async function removeProduct(id: string) {
+    setDeletingId(id);
+    try {
+      const res = await fetch(`/api/products/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed");
+      setProducts((prev) => prev.filter((p) => p.id !== id));
+      toast.success("Product deleted");
+      router.refresh();
+    } catch {
+      toast.error("Failed to delete product");
+    } finally {
+      setDeletingId(null);
+    }
+  }
 
   function clearFilters() {
     setMotorPhaseType("any");
@@ -243,29 +272,118 @@ export function AdminProductBrowser({ products }: { products: Product[] }) {
           </TableHeader>
           <TableBody>
             {filtered.map((product) => (
-              <TableRow key={product.id}>
-                <TableCell className="font-medium">{product.name}</TableCell>
-                <TableCell>₹{product.price.toLocaleString("en-IN")}</TableCell>
-                <TableCell>{product.motorPhaseType || "-"}</TableCell>
-                <TableCell>{product.starterType || "-"}</TableCell>
-                <TableCell>{product.motorType || "-"}</TableCell>
-                <TableCell>{product.waterSource || "-"}</TableCell>
-                <TableCell>{product.unitType || product.timerType || "-"}</TableCell>
-                <TableCell>{product.numberOfMotors || "-"}</TableCell>
-                <TableCell>{product.numberOfTanks || "-"}</TableCell>
-                <TableCell>{product.demoUrl ? "Yes" : "-"}</TableCell>
-                <TableCell className="text-right space-x-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    render={<Link href={`/admin/products/${product.id}`} />}
-                    nativeButton={false}
-                  >
-                    Edit
-                  </Button>
-                  <DeleteProductButton id={product.id} />
-                </TableCell>
-              </TableRow>
+              <Dialog key={product.id}>
+                <DialogTrigger
+                  render={<TableRow className="cursor-pointer hover:bg-muted/50" />}
+                  nativeButton={false}
+                >
+                  <TableCell className="font-medium">{product.name}</TableCell>
+                  <TableCell>₹{product.price.toLocaleString("en-IN")}</TableCell>
+                  <TableCell>{product.motorPhaseType || "-"}</TableCell>
+                  <TableCell>{product.starterType || "-"}</TableCell>
+                  <TableCell>{product.motorType || "-"}</TableCell>
+                  <TableCell>{product.waterSource || "-"}</TableCell>
+                  <TableCell>{product.unitType || product.timerType || "-"}</TableCell>
+                  <TableCell>{product.numberOfMotors || "-"}</TableCell>
+                  <TableCell>{product.numberOfTanks || "-"}</TableCell>
+                  <TableCell>{product.demoUrl ? "Yes" : "-"}</TableCell>
+                  <TableCell className="text-right text-muted-foreground text-sm">
+                    View
+                  </TableCell>
+                </DialogTrigger>
+                <DialogContent className="max-h-[90vh] overflow-y-auto max-w-lg">
+                  <DialogHeader>
+                    <DialogTitle>{product.name}</DialogTitle>
+                  </DialogHeader>
+
+                  {product.images.length > 0 && (
+                    <div className="relative aspect-video w-full overflow-hidden rounded-lg border bg-muted">
+                      <Image
+                        src={product.images[0]}
+                        alt={product.name}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  )}
+
+                  <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
+                    <div>
+                      <dt className="text-muted-foreground">Price</dt>
+                      <dd className="font-medium">₹{product.price.toLocaleString("en-IN")}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-muted-foreground">Demo</dt>
+                      <dd className="font-medium">{product.demoUrl ? "Yes" : "Not provided"}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-muted-foreground">Motor Phase</dt>
+                      <dd className="font-medium">{product.motorPhaseType || "Not provided"}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-muted-foreground">Starter Type</dt>
+                      <dd className="font-medium">{product.starterType || "Not provided"}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-muted-foreground">Motor Type</dt>
+                      <dd className="font-medium">{product.motorType || "Not provided"}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-muted-foreground">Water Source</dt>
+                      <dd className="font-medium">{product.waterSource || "Not provided"}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-muted-foreground">Unit Type</dt>
+                      <dd className="font-medium">
+                        {product.unitType || product.timerType || "Not provided"}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt className="text-muted-foreground">No. of Motors</dt>
+                      <dd className="font-medium">{product.numberOfMotors || "Not provided"}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-muted-foreground">No. of Overhead Tanks</dt>
+                      <dd className="font-medium">{product.numberOfTanks || "Not provided"}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-muted-foreground">Sump / Bore Capacity</dt>
+                      <dd className="font-medium">{product.sumpOrBoreCapacity || "Not provided"}</dd>
+                    </div>
+                  </dl>
+
+                  <div className="border-t pt-3">
+                    <p className="text-sm font-medium mb-1">Description</p>
+                    <p className="text-sm text-muted-foreground whitespace-pre-line">
+                      {product.description}
+                    </p>
+                  </div>
+
+                  <DialogFooter className="sm:justify-between">
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      disabled={deletingId === product.id}
+                      onClick={() => {
+                        if (confirm("Delete this product? This cannot be undone.")) {
+                          removeProduct(product.id);
+                        }
+                      }}
+                    >
+                      {deletingId === product.id ? "Deleting..." : "Delete"}
+                    </Button>
+                    <div className="flex gap-2">
+                      <DialogClose render={<Button variant="outline" />}>Close</DialogClose>
+                      <Button
+                        render={<Link href={`/admin/products/${product.id}`} />}
+                        nativeButton={false}
+                      >
+                        Edit
+                      </Button>
+                    </div>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             ))}
           </TableBody>
         </Table>
