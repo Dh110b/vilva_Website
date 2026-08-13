@@ -42,7 +42,7 @@ export default async function Home() {
 
       <section className="container mx-auto px-4 py-10 text-center">
         <h2 className="text-3xl font-bold mb-6">Tired of...</h2>
-        <div className="mx-auto flex max-w-6xl flex-col gap-3">
+        <div className="mx-auto grid max-w-6xl gap-3 sm:grid-cols-2">
           {problems.map((problem) => (
             <div
               key={problem}
