@@ -161,6 +161,38 @@ export async function deleteProduct(id: string): Promise<boolean> {
   return rows.length > 0;
 }
 
+export type ImageUsage = { label: string; href: string };
+
+export async function getAllUsedImageUrls(): Promise<Map<string, ImageUsage[]>> {
+  const [productRows, reviewRows] = await Promise.all([
+    sql`select id, name, images from products`,
+    sql`select id, product_id, name, images from reviews`,
+  ]);
+  const usage = new Map<string, ImageUsage[]>();
+
+  function add(url: string, entry: ImageUsage) {
+    const existing = usage.get(url);
+    if (existing) existing.push(entry);
+    else usage.set(url, [entry]);
+  }
+
+  for (const row of productRows) {
+    for (const url of (row.images as string[] | null) ?? []) {
+      add(url, { label: `Product: ${row.name}`, href: `/admin/products/${row.id}` });
+    }
+  }
+  for (const row of reviewRows) {
+    for (const url of (row.images as string[] | null) ?? []) {
+      add(url, {
+        label: `Review by ${row.name}`,
+        href: `/admin/products/${row.product_id}`,
+      });
+    }
+  }
+
+  return usage;
+}
+
 // ---------------------------------------------------------------------------
 // Enquiries
 // ---------------------------------------------------------------------------

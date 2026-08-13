@@ -4,8 +4,13 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import Link from "next/link";
 import type { StorageFile } from "@/lib/supabase";
+import type { ImageUsage } from "@/lib/data";
+
+type StorageFileWithUsage = StorageFile & { usage: ImageUsage[] };
 
 function formatBytes(bytes: number) {
   if (bytes === 0) return "0 MB";
@@ -19,7 +24,7 @@ export function AdminStorageUsage({
   files: initialFiles,
 }: {
   limitBytes: number;
-  files: StorageFile[];
+  files: StorageFileWithUsage[];
 }) {
   const [files, setFiles] = useState(initialFiles);
   const [deletingName, setDeletingName] = useState<string | null>(null);
@@ -85,7 +90,9 @@ export function AdminStorageUsage({
                   <TableRow>
                     <TableHead>File</TableHead>
                     <TableHead>Size</TableHead>
-                    <TableHead>Last modified</TableHead>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Time</TableHead>
+                    <TableHead>In use</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -107,8 +114,35 @@ export function AdminStorageUsage({
                       </TableCell>
                       <TableCell className="whitespace-nowrap">
                         {file.updatedAt
-                          ? new Date(file.updatedAt).toLocaleDateString("en-US")
+                          ? new Date(file.updatedAt).toLocaleDateString("en-US", {
+                              dateStyle: "medium",
+                            })
                           : "-"}
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        {file.updatedAt
+                          ? new Date(file.updatedAt).toLocaleTimeString("en-US", {
+                              timeStyle: "short",
+                            })
+                          : "-"}
+                      </TableCell>
+                      <TableCell className="min-w-[10rem]">
+                        {file.usage.length === 0 ? (
+                          <Badge variant="outline">No</Badge>
+                        ) : (
+                          <div className="space-y-1">
+                            <Badge>Yes</Badge>
+                            <ul className="space-y-0.5">
+                              {file.usage.map((u, i) => (
+                                <li key={i} className="text-xs">
+                                  <Link href={u.href} className="hover:underline">
+                                    {u.label}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
                       </TableCell>
                       <TableCell className="text-right">
                         <Button
