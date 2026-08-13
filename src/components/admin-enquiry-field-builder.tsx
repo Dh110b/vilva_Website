@@ -95,6 +95,8 @@ export function AdminEnquiryFieldBuilder({
   }
 
   function removeField(key: string) {
+    const field = config.find((f) => f.key === key);
+    if (!confirm(`Delete the "${field?.label ?? "field"}" field? This cannot be undone.`)) return;
     setConfig((prev) => prev.filter((f) => f.key !== key));
     if (expanded === key) setExpanded(null);
   }
@@ -514,18 +516,16 @@ function FieldRow({
           {field.enabled ? "Shown" : "Hidden"}
         </Button>
 
-        {field.custom && (
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-sm"
-            className="shrink-0 text-destructive"
-            onClick={onRemove}
-            aria-label="Delete field"
-          >
-            <Trash2 className="size-4" />
-          </Button>
-        )}
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          className="shrink-0 text-destructive"
+          onClick={onRemove}
+          aria-label="Delete field"
+        >
+          <Trash2 className="size-4" />
+        </Button>
       </div>
 
       {categories && isExpanded && (
@@ -609,7 +609,10 @@ function FieldRow({
 
                   <button
                     type="button"
-                    onClick={() => onOptionsChange(options.filter((_, i) => i !== index))}
+                    onClick={() => {
+                      if (!confirm(`Delete value "${opt}"?`)) return;
+                      onOptionsChange(options.filter((_, i) => i !== index));
+                    }}
                     className="text-muted-foreground hover:text-destructive shrink-0"
                     aria-label={`Delete ${opt}`}
                   >

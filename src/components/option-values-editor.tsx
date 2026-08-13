@@ -112,6 +112,7 @@ export function OptionValuesEditor({
   }
 
   async function removeValue(value: string) {
+    if (!confirm(`Delete value "${value}"?`)) return;
     const cat = categoryOf(value);
     setBusy(true);
     try {

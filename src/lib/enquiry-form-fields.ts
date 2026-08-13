@@ -91,10 +91,8 @@ export function normalizeEnquiryFieldConfig(
     }
   }
 
-  // Preserve stored order; append any missing built-in keys (e.g. newly added fields) at the end.
-  const ordered = Array.from(byKey.values());
-  for (const def of defaults) {
-    if (!byKey.has(def.key)) ordered.push(def);
-  }
-  return ordered;
+  // Preserve exactly what's stored, in its saved order — including any built-in
+  // fields the admin has deleted. (Only a missing/never-saved config falls back to
+  // defaults, handled by the !Array.isArray check above.)
+  return Array.from(byKey.values());
 }
