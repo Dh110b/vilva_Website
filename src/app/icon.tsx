@@ -14,11 +14,9 @@ export default function Icon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "#ffffff",
-          borderRadius: 9,
         }}
       >
-        <BrandMark width={36} />
+        <BrandMark width={46} />
       </div>
     ),
     { ...size }
