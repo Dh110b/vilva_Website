@@ -287,8 +287,16 @@ export function AdminProductBrowser({ products: initial }: { products: Product[]
                   <TableCell>{product.numberOfMotors || "-"}</TableCell>
                   <TableCell>{product.numberOfTanks || "-"}</TableCell>
                   <TableCell>{product.demoUrl ? "Yes" : "-"}</TableCell>
-                  <TableCell className="text-right text-muted-foreground text-sm">
-                    View
+                  <TableCell className="text-right">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      render={<Link href={`/admin/products/${product.id}`} />}
+                      nativeButton={false}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      Edit
+                    </Button>
                   </TableCell>
                 </DialogTrigger>
                 <DialogContent className="max-h-[90vh] overflow-y-auto max-w-lg" initialFocus={false}>
