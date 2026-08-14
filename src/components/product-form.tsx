@@ -118,75 +118,77 @@ export function ProductForm({ product }: { product?: Product }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-xl">
-      <div className="space-y-2">
-        <Label htmlFor="name">Product Name</Label>
-        <Input id="name" required value={name} onChange={(e) => setName(e.target.value)} />
-      </div>
+    <form
+      onSubmit={handleSubmit}
+      className="w-full rounded-lg border border-foreground/25 bg-white/10 p-6 shadow-lg backdrop-blur-md dark:border-white/20 dark:bg-white/5 space-y-6"
+    >
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="space-y-2 sm:col-span-2 lg:col-span-1">
+          <Label htmlFor="name">Product Name</Label>
+          <Input id="name" required value={name} onChange={(e) => setName(e.target.value)} />
+        </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="description">Description</Label>
-        <Textarea
-          id="description"
-          required
-          rows={5}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-      </div>
+        <div className="space-y-2">
+          <Label htmlFor="price">Price (₹)</Label>
+          <Input
+            id="price"
+            type="number"
+            min="0"
+            step="0.01"
+            required
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+          />
+        </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="price">Price (₹)</Label>
-        <Input
-          id="price"
-          type="number"
-          min="0"
-          step="0.01"
-          required
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-        />
-      </div>
+        <div className="space-y-2">
+          <Label htmlFor="demo">Demo Page File (optional)</Label>
+          <Input id="demo" type="file" onChange={handleDemoUpload} />
+          {uploadingDemo && <p className="text-sm text-muted-foreground">Uploading...</p>}
+          {demoUrl && (
+            <p className="text-sm text-muted-foreground truncate">
+              Uploaded: <a href={demoUrl} target="_blank" className="underline">{demoUrl}</a>
+            </p>
+          )}
+          <Input
+            placeholder="Or paste a demo link: https://... or /uploads/..."
+            value={demoUrl}
+            onChange={(e) => setDemoUrl(e.target.value)}
+          />
+        </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="images">Product Images</Label>
-        <Input id="images" type="file" accept="image/*" multiple onChange={handleImageUpload} />
-        {uploadingImages && <p className="text-sm text-muted-foreground">Uploading...</p>}
-        {images.length > 0 && (
-          <div className="grid grid-cols-3 gap-2 mt-2 sm:grid-cols-4">
-            {images.map((img) => (
-              <div key={img} className="relative aspect-square bg-muted rounded overflow-hidden group">
-                <Image src={img} alt="" fill className="object-cover" />
-                <button
-                  type="button"
-                  onClick={() => setImages((prev) => prev.filter((i) => i !== img))}
-                  className="absolute top-1 right-1 bg-background/80 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+        <div className="space-y-2 sm:col-span-2 lg:col-span-3">
+          <Label htmlFor="description">Description</Label>
+          <Textarea
+            id="description"
+            required
+            rows={5}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="demo">Demo Page File (optional)</Label>
-        <Input id="demo" type="file" onChange={handleDemoUpload} />
-        {uploadingDemo && <p className="text-sm text-muted-foreground">Uploading...</p>}
-        {demoUrl && (
-          <p className="text-sm text-muted-foreground">
-            Uploaded: <a href={demoUrl} target="_blank" className="underline">{demoUrl}</a>
-          </p>
-        )}
-        <p className="text-xs text-muted-foreground">
-          Or paste a demo link directly below.
-        </p>
-        <Input
-          placeholder="https://... or /uploads/..."
-          value={demoUrl}
-          onChange={(e) => setDemoUrl(e.target.value)}
-        />
+        <div className="space-y-2 sm:col-span-2 lg:col-span-3">
+          <Label htmlFor="images">Product Images</Label>
+          <Input id="images" type="file" accept="image/*" multiple onChange={handleImageUpload} />
+          {uploadingImages && <p className="text-sm text-muted-foreground">Uploading...</p>}
+          {images.length > 0 && (
+            <div className="grid grid-cols-3 gap-2 mt-2 sm:grid-cols-4 lg:grid-cols-6">
+              {images.map((img) => (
+                <div key={img} className="relative aspect-square bg-muted rounded overflow-hidden group">
+                  <Image src={img} alt="" fill className="object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => setImages((prev) => prev.filter((i) => i !== img))}
+                    className="absolute top-1 right-1 bg-background/80 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="space-y-3 rounded-lg border p-4">
@@ -199,6 +201,7 @@ export function ProductForm({ product }: { product?: Product }) {
           </p>
         </div>
 
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div className="space-y-2">
           <div className="flex items-center gap-1">
             <Label htmlFor="unitType">Unit Type</Label>
@@ -243,7 +246,6 @@ export function ProductForm({ product }: { product?: Product }) {
           />
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <div className="flex items-center gap-1">
               <Label htmlFor="motorPhaseType">Motor Phase Type</Label>
@@ -293,9 +295,7 @@ export function ProductForm({ product }: { product?: Product }) {
               </SelectContent>
             </Select>
           </div>
-        </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <div className="flex items-center gap-1">
               <Label htmlFor="motorType">Motor Type</Label>
@@ -342,7 +342,6 @@ export function ProductForm({ product }: { product?: Product }) {
               </SelectContent>
             </Select>
           </div>
-        </div>
 
         <MotorCapacityField
           idPrefix="sumpOrBoreCapacity"
@@ -361,6 +360,7 @@ export function ProductForm({ product }: { product?: Product }) {
             value={numberOfMotors}
             onChange={(e) => setNumberOfMotors(e.target.value)}
           />
+        </div>
         </div>
       </div>
 
