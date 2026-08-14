@@ -288,15 +288,31 @@ export function AdminProductBrowser({ products: initial }: { products: Product[]
                   <TableCell>{product.numberOfTanks || "-"}</TableCell>
                   <TableCell>{product.demoUrl ? "Yes" : "-"}</TableCell>
                   <TableCell className="text-right">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      render={<Link href={`/admin/products/${product.id}`} />}
-                      nativeButton={false}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      Edit
-                    </Button>
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        render={<Link href={`/admin/products/${product.id}`} />}
+                        nativeButton={false}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="destructive"
+                        disabled={deletingId === product.id}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (confirm("Delete this product? This cannot be undone.")) {
+                            removeProduct(product.id);
+                          }
+                        }}
+                      >
+                        {deletingId === product.id ? "Deleting..." : "Delete"}
+                      </Button>
+                    </div>
                   </TableCell>
                 </DialogTrigger>
                 <DialogContent className="max-h-[90vh] overflow-y-auto max-w-lg" initialFocus={false}>

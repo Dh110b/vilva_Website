@@ -364,9 +364,19 @@ export function ProductForm({ product }: { product?: Product }) {
         </div>
       </div>
 
-      <Button type="submit" disabled={submitting}>
-        {submitting ? "Saving..." : product ? "Update Product" : "Create Product"}
-      </Button>
+      <div className="flex gap-3">
+        <Button type="submit" disabled={submitting}>
+          {submitting ? "Saving..." : product ? "Update Product" : "Create Product"}
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          disabled={submitting}
+          onClick={() => router.push("/admin")}
+        >
+          Cancel
+        </Button>
+      </div>
     </form>
   );
 }
