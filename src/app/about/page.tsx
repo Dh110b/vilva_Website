@@ -159,7 +159,7 @@ export default function AboutPage() {
               &ldquo;Reliable Company, Quality Products, and Committed
               Service.&rdquo;
             </p>
-            <p className="relative text-center mt-2 text-sm font-medium text-primary">
+            <p className="relative text-center mt-2 text-base font-medium text-primary">
               All you need, and at VILVA, we have it.
             </p>
           </div>
