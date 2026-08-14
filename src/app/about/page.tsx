@@ -3,146 +3,162 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "About Us",
   description:
-    "Learn about Vilva Distributors and Services — our story, our promoter's background in the two-wheeler and battery distribution industry, and our mission to build reliable, made-in-India water level controllers.",
+    "M/s. Manjushree Enterprises (established 2009) — a leading supplier and service provider across Karnataka and Tamil Nadu, committed to quality assurance, ethical practices, and rapid customer service.",
   alternates: { canonical: "/about" },
 };
 
 export default function AboutPage() {
   return (
-    <div className="container mx-auto px-4 py-12 max-w-3xl">
-      <h1 className="text-3xl font-bold mb-10">About Us</h1>
+    <div className="container mx-auto px-4 py-12 max-w-5xl">
+      <h1 className="text-3xl font-bold mb-10">
+        M/s. Manjushree Enterprises
+        <br />
+        <span className="text-lg font-normal text-muted-foreground">
+          Established in 2009
+        </span>
+      </h1>
 
       <div className="space-y-10 rounded-lg border border-foreground/25 bg-white/10 p-6 text-muted-foreground shadow-lg backdrop-blur-md dark:border-white/20 dark:bg-white/5">
         <section>
           <h2 className="text-xl font-semibold text-foreground mb-3">
-            Profile of the Promoter
+            About Us
           </h2>
           <p>
-            Mr. Vijaya Kumar is a B.Sc graduate with deep roots in the two-wheeler
-            industry. He began his career as Works In-charge at a reputed Yamaha
-            two-wheeler showroom for 8 years, later being promoted to Works Manager at
-            a reputed Bajaj two-wheeler showroom for 6 years.
+            Founded on the virtues of integrity, honesty, and high-quality
+            assistance, M/s. Manjushree Enterprises is a leading supplier and
+            service provider of a comprehensive range of premium products.
+            Through our commitment to transparent dealing and business
+            ethics, we have established a strong market presence across
+            Karnataka and Tamil Nadu.
           </p>
           <p className="mt-3">
-            Drawing on this extensive experience in the two-wheeler industry, he went
-            on to found M/s Manjushree Enterprises as a distributor for MINDA
-            batteries across Mysore, Chamarajnagar, and Kodagu districts. With
-            dedication and the support of partners and colleagues, the business grew
-            its monthly sales from 20 units to 1,500 units, and expanded its
-            authorization from 3 districts to 7 districts — Bangalore, Kolar,
-            Ramnagar, and Tumkur.
+            Under the visionary guidance of our Promoter, Mr. A. Vijaya
+            Kumar, our technically efficient team works untiringly to drive
+            the company forward, offering innovative products and
+            customized, value-added services tailored to the precise needs
+            of our clients.
           </p>
         </section>
 
         <section>
           <h2 className="text-xl font-semibold text-foreground mb-3">
-            About the Name &ldquo;Vilva&rdquo;
+            Quality Assurance, Client Satisfaction &amp; Warranty
           </h2>
-          <p>
-            Bilvapatra, or vilva leaves — otherwise known as Bel leaves — are among
-            the most sacred offerings to Lord Shiva. It is a herb of very high
-            medicinal value, and the vilva leaf has found its presence across the
-            various Puranas, playing an important role in various mythologies.
-          </p>
-          <p className="mt-3">
-            The word bilva (Bel tree) is usually used as bilva-patra (leaf of Bel). It
-            is a sacred tree of great ceremonial importance. Leaves of this sacred
-            tree are generally trifoliate — a form symbolic of the Trikal (Brahma,
-            Vishnu, and Mahesh), the three eyes of Lord Shiva, and Trishakti
-            (Volition, Action, and Knowledge).
-          </p>
+          <ul className="space-y-2 list-disc pl-5">
+            <li>
+              <span className="font-medium text-foreground">
+                2-Year Universal Warranty
+              </span>{" "}
+              — We provide a comprehensive 2-year warranty on our brand
+              products, giving you long-term peace of mind regardless of your
+              purchase location or vendor.
+            </li>
+            <li>
+              <span className="font-medium text-foreground">
+                International Standards
+              </span>{" "}
+              — We ensure all products are at par with global benchmarks to
+              effectively fulfill your operational requirements.
+            </li>
+            <li>
+              <span className="font-medium text-foreground">
+                Flawless Delivery
+              </span>{" "}
+              — Our core motto balances the launching of innovative products
+              with absolute quality assurance and robust warranty support.
+            </li>
+            <li>
+              <span className="font-medium text-foreground">
+                Ethical Practices
+              </span>{" "}
+              — We build long-term trust through consistently fair, honest,
+              and transparent dealings with no hidden clauses.
+            </li>
+          </ul>
         </section>
 
         <section>
           <h2 className="text-xl font-semibold text-foreground mb-3">
-            About Our Caption
+            Our Service Commitments
           </h2>
-          <p className="italic text-foreground mb-3">
-            &ldquo;Volition, Action &amp; Knowledge&rdquo;
+          <h3 className="font-medium text-foreground mb-2">
+            VILVA No.1 Service (Quick Assured Service &ndash; QAS)
+          </h3>
+          <p className="mb-3">
+            We provide a structured response system to guarantee rapid issue
+            resolution:
           </p>
           <ul className="space-y-2 list-disc pl-5">
             <li>
-              <span className="font-medium text-foreground">Volition</span> — an act
-              of making a choice or decision; the power of choosing or determining:
-              will.
+              <span className="font-medium text-foreground">
+                24/7 Support
+              </span>{" "}
+              — A dedicated Customer Care Service operating around the clock
+              for client convenience.
             </li>
             <li>
-              <span className="font-medium text-foreground">Action</span> — a process
-              of acting or moving, the exertion of power or effort toward a purpose.
+              <span className="font-medium text-foreground">
+                1-Hour Acknowledgment
+              </span>{" "}
+              — All registered complaints and issues receive an official
+              reference number and acknowledgment within one hour.
             </li>
             <li>
-              <span className="font-medium text-foreground">Knowledge</span> —
-              familiarity, awareness, or understanding gained through experience or
-              study.
+              <span className="font-medium text-foreground">
+                1-Day Resolution
+              </span>{" "}
+              — Acknowledged issues are resolved within one business day.
+            </li>
+            <li>
+              <span className="font-medium text-foreground">
+                Proactive Follow-up
+              </span>{" "}
+              — We connect with clients weekly for general feedback, and
+              strictly reconfirm resolved issues after one week to ensure
+              absolute gratification.
+            </li>
+            <li>
+              <span className="font-medium text-foreground">
+                Visible Contact
+              </span>{" "}
+              — Customer care details are placed directly on all products for
+              effortless accessibility.
             </li>
           </ul>
-          <p className="mt-3">
-            At Vilva Distributors and Services Private Limited, we believe that all
-            three of these elements are required for any successful and sustainable
-            venture.
+
+          <h3 className="font-medium text-foreground mt-6 mb-2">
+            Complete Protection (Vilva Suraksha)
+          </h3>
+          <p>
+            We undertake Annual Maintenance Contracts (AMC) and Annual
+            Service Contracts (ASC) for products of any make or model.
+          </p>
+
+          <h3 className="font-medium text-foreground mt-6 mb-2">
+            Go Green Policy
+          </h3>
+          <p>
+            In compliance with government pollution norms and our commitment
+            to environmental safety, we actively collect and buy back
+            lifeless products to ensure safe, legal disposal.
           </p>
         </section>
 
         <section className="border-y py-8">
-          <p className="italic text-foreground text-lg text-center">
-            &ldquo;Vision without action is a daydream. Action without vision is a
-            nightmare.&rdquo;
-          </p>
-          <p className="text-center mt-2 text-sm">— Soichiro Honda</p>
-        </section>
-
-        <section>
-          <h2 className="text-xl font-semibold text-foreground mb-3">Our Vision</h2>
-          <p>
-            Our core business vision is to be a leading distributor and a committed
-            service provider. We are expanding on this vision by manufacturing
-            high-quality, customized products and providing the best possible
-            customer and consumer experience at every moment of truth.
-          </p>
-          <p className="mt-3">
-            Using this strategy, we strive to make life easier for our customers and
-            consumers.
-          </p>
-        </section>
-
-        <section>
-          <h2 className="text-xl font-semibold text-foreground mb-3">Our Mission</h2>
-          <p>
-            A vision statement is what an organization wants to become. A mission
-            statement concerns what an organization is all about.
-          </p>
-          <p className="mt-3">
-            Since our founding, our mission has centered on growing our product range
-            — including MINDA products, cables, brake shoes, clutch plates, and
-            batteries — building out retail counters and service centres across
-            district headquarters, and steadily expanding our retail partner network.
-            We have also worked toward manufacturing and marketing in-house products
-            such as heavy-capacity tubular batteries, battery chargers, de-ionised
-            water, electrolyte, and petroleum jelly.
-          </p>
-        </section>
-
-        <section>
-          <h2 className="text-xl font-semibold text-foreground mb-3">
-            Registered Business Details
+          <h2 className="text-xl font-semibold text-foreground mb-3 text-center">
+            The VILVA Promise
           </h2>
-          <p>
-            Vilva is operated under M/s Manjushree Enterprises, a GST-registered
-            business (GSTIN: <span className="font-medium text-foreground">29AZRPV9644D1ZG</span>),
-            based at #163, Vinayaka Layout, Bengaluru, Karnataka.
+          <p className="text-center">
+            At M/s. Manjushree Enterprises, we are committed to offering
+            superior products, competitive pricing, and excellent customer
+            service — all under one roof.
           </p>
-        </section>
-
-        <section>
-          <h2 className="text-xl font-semibold text-foreground mb-3">
-            Get in Touch
-          </h2>
-          <p>
-            Have a question about our products? Visit our{" "}
-            <a href="/contact" className="underline underline-offset-4">
-              Contact Us
-            </a>{" "}
-            page or send an enquiry directly from any product page.
+          <p className="italic text-foreground text-lg text-center mt-4">
+            &ldquo;Reliable Company, Quality Products, and Committed
+            Service.&rdquo;
+          </p>
+          <p className="text-center mt-2 text-sm">
+            All you need, and at VILVA, we have it.
           </p>
         </section>
       </div>
