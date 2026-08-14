@@ -153,13 +153,16 @@ export default function AboutPage() {
             superior products, competitive pricing, and excellent customer
             service — all under one roof.
           </p>
-          <p className="italic text-foreground text-lg text-center mt-4">
-            &ldquo;Reliable Company, Quality Products, and Committed
-            Service.&rdquo;
-          </p>
-          <p className="text-center mt-2 text-sm">
-            All you need, and at VILVA, we have it.
-          </p>
+          <div className="group relative mx-auto mt-6 w-fit max-w-full overflow-hidden rounded-xl border border-primary/30 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent px-8 py-6 shadow-md transition-all duration-300 hover:shadow-xl hover:shadow-primary/20 hover:-translate-y-0.5">
+            <div className="pointer-events-none absolute -top-16 -right-16 h-40 w-40 rounded-full bg-primary/20 blur-3xl transition-opacity duration-300 group-hover:opacity-80" />
+            <p className="relative italic text-foreground text-lg text-center">
+              &ldquo;Reliable Company, Quality Products, and Committed
+              Service.&rdquo;
+            </p>
+            <p className="relative text-center mt-2 text-sm font-medium text-primary">
+              All you need, and at VILVA, we have it.
+            </p>
+          </div>
         </section>
       </div>
     </div>
