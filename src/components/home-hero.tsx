@@ -11,8 +11,8 @@ export function HomeHero() {
       backgroundImageUrl=""
       logo={null}
       navLinks={[]}
-      title="Never Worry About Water Again"
-      description="The MicroComputer Automatic Water Level Controller that saves your time, water, electricity — and your motor pump."
+      title="Water Problems? We've Got It Covered."
+      description="Stop checking the tank. Stop flipping switches. This Automatic Water Level Controller handles your pump on its own — overflow-proof, dry-run-proof, effortless."
       ctaButton={{
         text: "Get a Quote",
         onClick: () => router.push("/contact"),
