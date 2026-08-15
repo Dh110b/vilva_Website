@@ -1,10 +1,12 @@
 import { cookies } from "next/headers";
 import { ADMIN_COOKIE_NAME, isValidSessionToken } from "@/lib/auth";
 import { Navbar1 } from "@/components/ui/navbar-1";
+import { getProductTypes } from "@/lib/data";
 
 export async function SiteHeader() {
   const cookieStore = await cookies();
   const isAuthed = !!(await isValidSessionToken(cookieStore.get(ADMIN_COOKIE_NAME)?.value));
+  const productTypes = await getProductTypes();
 
-  return <Navbar1 isAuthed={isAuthed} />;
+  return <Navbar1 isAuthed={isAuthed} productTypes={productTypes} />;
 }

@@ -36,13 +36,19 @@ const ratingOptions = [
 ];
 
 
-export function ProductBrowser({ products }: { products: ProductWithRating[] }) {
+export function ProductBrowser({
+  products,
+  initialProductType,
+}: {
+  products: ProductWithRating[];
+  initialProductType?: string;
+}) {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortOption>("newest");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [minRating, setMinRating] = useState("0");
-  const [productType, setProductType] = useState("any");
+  const [productType, setProductType] = useState(initialProductType || "any");
   const [motorPhaseType, setMotorPhaseType] = useState("any");
   const [starterType, setStarterType] = useState("any");
   const [motorType, setMotorType] = useState("any");

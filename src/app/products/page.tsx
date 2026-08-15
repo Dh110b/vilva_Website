@@ -9,14 +9,21 @@ export const metadata: Metadata = {
   alternates: { canonical: "/products" },
 };
 
-export default async function ProductsPage() {
+export default async function ProductsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ type?: string }>;
+}) {
+  const { type } = await searchParams;
   const products = await getProducts();
   const ratings = await getProductRatings();
-  const productsWithRating = products.map((product) => ({
-    ...product,
-    avgRating: ratings[product.id]?.average ?? 0,
-    reviewCount: ratings[product.id]?.count ?? 0,
-  }));
+  const productsWithRating = products
+    .filter((product) => !type || product.productType === type)
+    .map((product) => ({
+      ...product,
+      avgRating: ratings[product.id]?.average ?? 0,
+      reviewCount: ratings[product.id]?.count ?? 0,
+    }));
 
   return (
     <div className="container mx-auto px-4 py-10">
@@ -30,7 +37,7 @@ export default async function ProductsPage() {
       {products.length === 0 ? (
         <p className="text-muted-foreground">No products available yet. Check back soon.</p>
       ) : (
-        <ProductBrowser products={productsWithRating} />
+        <ProductBrowser key={type ?? "all"} products={productsWithRating} initialProductType={type} />
       )}
     </div>
   );

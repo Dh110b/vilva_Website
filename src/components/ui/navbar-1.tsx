@@ -3,21 +3,28 @@
 import * as React from "react"
 import { useState } from "react"
 import { motion, AnimatePresence } from "motion/react"
-import { Menu, X } from "lucide-react"
+import { Menu, X, ChevronDown } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { ThemeToggle } from "@/components/theme-toggle"
+import type { ProductTypeDef } from "@/lib/product-types"
 
-const navItems = [
-  { label: "Home", href: "/" },
-  { label: "Products", href: "/products" },
-  { label: "Custom Product", href: "/custom-product" },
+const homeItem = { label: "Home", href: "/" }
+const afterProductsItems = [
   { label: "About Us", href: "/about" },
   { label: "Contact Us", href: "/contact" },
 ]
 
-const Navbar1 = ({ isAuthed = false }: { isAuthed?: boolean }) => {
+const Navbar1 = ({
+  isAuthed = false,
+  productTypes = [],
+}: {
+  isAuthed?: boolean
+  productTypes?: ProductTypeDef[]
+}) => {
   const [isOpen, setIsOpen] = useState(false)
+  const [isProductsOpen, setIsProductsOpen] = useState(false)
+  const [isMobileProductsOpen, setIsMobileProductsOpen] = useState(false)
 
   const toggleMenu = () => setIsOpen(!isOpen)
 
@@ -46,7 +53,75 @@ const Navbar1 = ({ isAuthed = false }: { isAuthed?: boolean }) => {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
-          {navItems.map((item) => (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            whileHover={{ scale: 1.05 }}
+          >
+            <Link
+              href={homeItem.href}
+              className="text-base text-foreground hover:text-primary transition-colors font-medium"
+            >
+              {homeItem.label}
+            </Link>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="relative"
+            onMouseEnter={() => setIsProductsOpen(true)}
+            onMouseLeave={() => setIsProductsOpen(false)}
+          >
+            <Link
+              href="/products"
+              className="flex items-center gap-1 text-base text-foreground hover:text-primary transition-colors font-medium"
+            >
+              Products
+              <ChevronDown className="h-4 w-4" />
+            </Link>
+
+            <AnimatePresence>
+              {isProductsOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute left-0 top-full pt-3 w-56"
+                >
+                  <div className="rounded-2xl border border-foreground/15 bg-background/95 backdrop-blur-md shadow-lg py-2 dark:border-white/10">
+                    <Link
+                      href="/products"
+                      className="block px-4 py-2 text-sm text-foreground hover:bg-foreground/5 hover:text-primary transition-colors"
+                    >
+                      All Products
+                    </Link>
+                    {productTypes.map((type) => (
+                      <Link
+                        key={type.name}
+                        href={`/products?type=${encodeURIComponent(type.name)}`}
+                        className="block px-4 py-2 text-sm text-foreground hover:bg-foreground/5 hover:text-primary transition-colors"
+                      >
+                        {type.name}
+                      </Link>
+                    ))}
+                    <div className="my-1 border-t border-foreground/10 dark:border-white/10" />
+                    <Link
+                      href="/custom-product"
+                      className="block px-4 py-2 text-sm text-foreground hover:bg-foreground/5 hover:text-primary transition-colors"
+                    >
+                      Custom Product
+                    </Link>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+
+          {afterProductsItems.map((item) => (
             <motion.div
               key={item.label}
               initial={{ opacity: 0, y: -10 }}
@@ -95,7 +170,7 @@ const Navbar1 = ({ isAuthed = false }: { isAuthed?: boolean }) => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="fixed inset-0 bg-background z-50 pt-24 px-6 md:hidden"
+            className="fixed inset-0 bg-background z-50 pt-24 px-6 md:hidden overflow-y-auto"
             initial={{ opacity: 0, x: "100%" }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
@@ -111,13 +186,81 @@ const Navbar1 = ({ isAuthed = false }: { isAuthed?: boolean }) => {
             >
               <X className="h-6 w-6 text-foreground" />
             </motion.button>
-            <div className="flex flex-col space-y-6">
-              {navItems.map((item, i) => (
+            <div className="flex flex-col space-y-6 pb-10">
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.1 }}
+                exit={{ opacity: 0, x: 20 }}
+              >
+                <Link href={homeItem.href} className="text-base text-foreground font-medium" onClick={toggleMenu}>
+                  {homeItem.label}
+                </Link>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.15 }}
+                exit={{ opacity: 0, x: 20 }}
+              >
+                <div className="flex items-center justify-between">
+                  <Link
+                    href="/products"
+                    className="text-base text-foreground font-medium"
+                    onClick={toggleMenu}
+                  >
+                    Products
+                  </Link>
+                  <button
+                    type="button"
+                    aria-label="Toggle product types"
+                    onClick={() => setIsMobileProductsOpen((v) => !v)}
+                    className="p-1"
+                  >
+                    <ChevronDown
+                      className={`h-4 w-4 text-foreground transition-transform ${
+                        isMobileProductsOpen ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+                </div>
+                <AnimatePresence>
+                  {isMobileProductsOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="flex flex-col space-y-4 pl-4 pt-4 overflow-hidden"
+                    >
+                      {productTypes.map((type) => (
+                        <Link
+                          key={type.name}
+                          href={`/products?type=${encodeURIComponent(type.name)}`}
+                          className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                          onClick={toggleMenu}
+                        >
+                          {type.name}
+                        </Link>
+                      ))}
+                      <Link
+                        href="/custom-product"
+                        className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                        onClick={toggleMenu}
+                      >
+                        Custom Product
+                      </Link>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+
+              {afterProductsItems.map((item, i) => (
                 <motion.div
                   key={item.label}
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.1 + 0.1 }}
+                  transition={{ delay: i * 0.1 + 0.2 }}
                   exit={{ opacity: 0, x: 20 }}
                 >
                   <Link href={item.href} className="text-base text-foreground font-medium" onClick={toggleMenu}>
