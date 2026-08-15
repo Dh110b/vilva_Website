@@ -38,6 +38,11 @@ async function main() {
   `;
 
   await sql`
+    alter table products
+    add column if not exists product_type text not null default 'Smart Auto Starter';
+  `;
+
+  await sql`
     create table if not exists reviews (
       id uuid primary key default gen_random_uuid(),
       product_id text not null,

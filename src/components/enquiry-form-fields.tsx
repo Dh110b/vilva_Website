@@ -235,6 +235,7 @@ export function EnquiryFormFields<T extends EnquiryFormValues>({
                   <Label htmlFor={field.key}>{field.label}</Label>
                   <Input
                     id={field.key}
+                    type={field.type === "number" ? "number" : "text"}
                     value={value}
                     onChange={(e) =>
                       setForm((f) => ({

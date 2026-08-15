@@ -63,10 +63,15 @@ const FIELD_CATEGORIES: Partial<Record<string, OptionCategory[]>> = {
 };
 
 export function AdminEnquiryFieldBuilder({
+  productType,
+  initialTitle,
   initialConfig,
 }: {
+  productType: string;
+  initialTitle: string;
   initialConfig: EnquiryFieldConfig[];
 }) {
+  const [title, setTitle] = useState(initialTitle);
   const [config, setConfig] = useState(initialConfig);
   const [saving, setSaving] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -145,14 +150,18 @@ export function AdminEnquiryFieldBuilder({
   async function handleSave() {
     setSaving(true);
     try {
-      const res = await fetch("/api/enquiry-form-fields", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(config),
-      });
+      const res = await fetch(
+        `/api/enquiry-form-fields?type=${encodeURIComponent(productType)}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title, fields: config }),
+        }
+      );
       if (!res.ok) throw new Error("Failed");
       const saved = await res.json();
-      setConfig(saved);
+      setTitle(saved.title);
+      setConfig(saved.fields);
       toast.success("Send Enquiry form updated");
     } catch {
       toast.error("Failed to save changes");
@@ -165,11 +174,23 @@ export function AdminEnquiryFieldBuilder({
     <div className="space-y-10">
       <div className="max-w-2xl space-y-4">
         <p className="text-sm text-muted-foreground">
-          Controls the &quot;Motor &amp; Pump Details&quot; fields shown on the product Send
-          Enquiry popup and the Custom Product page. Press and drag the handle to reorder fields,
+          Controls the extra fields section shown on the product Send Enquiry popup and the
+          Custom Product page for this product type. Press and drag the handle to reorder fields,
           rename or hide them, and for dropdown fields, add/remove/reorder the values customers
           can pick — name, email, phone, address, and pincode always stay on the form.
         </p>
+
+        <div className="space-y-1.5">
+          <Label htmlFor="section-title" className="text-xs text-muted-foreground">
+            Section title
+          </Label>
+          <Input
+            id="section-title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="e.g. Motor & Pump Details (optional)"
+          />
+        </div>
 
         <Reorder.Group axis="y" values={config} onReorder={setConfig} className="space-y-2">
           {config.map((field) => {
@@ -220,7 +241,8 @@ export function AdminEnquiryFieldBuilder({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="text">Text value</SelectItem>
+                    <SelectItem value="text">Text</SelectItem>
+                    <SelectItem value="number">Number</SelectItem>
                     <SelectItem value="dropdown">Dropdown</SelectItem>
                   </SelectContent>
                 </Select>
@@ -272,7 +294,7 @@ export function AdminEnquiryFieldBuilder({
 
             <div className="flex gap-2">
               <Button type="button" size="sm" onClick={addCustomField}>
-                <Plus className="size-4" /> Add Field
+                Save
               </Button>
               <Button type="button" size="sm" variant="ghost" onClick={cancelAddField}>
                 Cancel
@@ -327,7 +349,7 @@ export function AdminEnquiryFieldBuilder({
 
             <div className="space-y-3 rounded-lg border p-4">
               <div>
-                <p className="text-sm font-medium">Motor &amp; Pump Details (optional)</p>
+                <p className="text-sm font-medium">{title}</p>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   Don&apos;t know these details? Contact us and we&apos;ll help you figure it out.
                 </p>
@@ -381,7 +403,7 @@ export function AdminEnquiryFieldBuilder({
 
             <div className="space-y-3 rounded-lg border p-4">
               <div>
-                <p className="text-sm font-medium">Motor &amp; Pump Details (optional)</p>
+                <p className="text-sm font-medium">{title}</p>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   Tell us what you have so we can design a custom controller for it.
                 </p>

@@ -29,12 +29,18 @@ const initialForm = {
   customFields: {} as Record<string, string>,
 };
 
-export function CustomEnquiryForm() {
+export function CustomEnquiryForm({
+  productType,
+  isExtraEnquiry,
+}: {
+  productType: string;
+  isExtraEnquiry: boolean;
+}) {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState(initialForm);
   const { lists: optionLists } = useOptionLists();
-  const { config: fieldConfig } = useEnquiryFieldConfig();
+  const { title: sectionTitle, config: fieldConfig } = useEnquiryFieldConfig(productType);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -43,7 +49,7 @@ export function CustomEnquiryForm() {
       const res = await fetch("/api/enquiries", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId: "custom", ...form }),
+        body: JSON.stringify({ productId: "custom", productType, ...form }),
       });
       if (!res.ok) throw new Error("Failed to send enquiry");
       toast.success("Enquiry sent! We'll get back to you soon.");
@@ -130,23 +136,25 @@ export function CustomEnquiryForm() {
         </div>
       </div>
 
-      <div className="space-y-3 rounded-lg border p-4 mt-4">
-        <div>
-          <p className="text-sm font-medium">Motor &amp; Pump Details (optional)</p>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Tell us what you have so we can design a custom controller for it.
-          </p>
-        </div>
+      {isExtraEnquiry && fieldConfig.length > 0 && (
+        <div className="space-y-3 rounded-lg border p-4 mt-4">
+          <div>
+            <p className="text-sm font-medium">{sectionTitle}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Tell us what you have so we can design a custom product for it.
+            </p>
+          </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <EnquiryFormFields
-            config={fieldConfig}
-            form={form}
-            setForm={setForm}
-            optionLists={optionLists}
-          />
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <EnquiryFormFields
+              config={fieldConfig}
+              form={form}
+              setForm={setForm}
+              optionLists={optionLists}
+            />
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="space-y-2 mt-4">
         <Label htmlFor="message">Describe Your Custom Requirement</Label>

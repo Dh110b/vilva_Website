@@ -15,6 +15,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const {
     productId,
+    productType,
     name,
     email,
     phone,
@@ -45,7 +46,9 @@ export async function POST(req: NextRequest) {
 
   const enquiry = await createEnquiry({
     productId,
-    productName: isCustom ? "Custom Water Level Controller" : product!.name,
+    productName: isCustom
+      ? `Custom ${typeof productType === "string" && productType.trim() ? productType : "Product"}`
+      : product!.name,
     name,
     email,
     phone,

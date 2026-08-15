@@ -28,12 +28,15 @@ import {
 import { toast } from "sonner";
 import type { Product } from "@/lib/data";
 import { useOptionLists } from "@/hooks/use-option-lists";
+import { hasExtraEnquiry } from "@/lib/product-types";
+import { useProductTypes } from "@/hooks/use-product-types";
 
 export function AdminProductBrowser({ products: initial }: { products: Product[] }) {
   const router = useRouter();
   const [products, setProducts] = useState(initial);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
+  const [productTypeFilter, setProductTypeFilter] = useState("any");
   const [motorPhaseType, setMotorPhaseType] = useState("any");
   const [starterType, setStarterType] = useState("any");
   const [motorType, setMotorType] = useState("any");
@@ -43,6 +46,7 @@ export function AdminProductBrowser({ products: initial }: { products: Product[]
   const [numberOfTanks, setNumberOfTanks] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const { lists: optionLists } = useOptionLists();
+  const { types: productTypes } = useProductTypes();
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -51,6 +55,7 @@ export function AdminProductBrowser({ products: initial }: { products: Product[]
 
     return products.filter((p) => {
       if (q && !p.name.toLowerCase().includes(q)) return false;
+      if (productTypeFilter !== "any" && p.productType !== productTypeFilter) return false;
       if (motorPhaseType !== "any" && p.motorPhaseType !== motorPhaseType) return false;
       if (starterType !== "any" && p.starterType !== starterType) return false;
       if (motorType !== "any" && p.motorType !== motorType) return false;
@@ -63,6 +68,7 @@ export function AdminProductBrowser({ products: initial }: { products: Product[]
   }, [
     products,
     query,
+    productTypeFilter,
     motorPhaseType,
     starterType,
     motorType,
@@ -73,6 +79,7 @@ export function AdminProductBrowser({ products: initial }: { products: Product[]
   ]);
 
   const hasActiveFilters =
+    productTypeFilter !== "any" ||
     motorPhaseType !== "any" ||
     starterType !== "any" ||
     motorType !== "any" ||
@@ -97,6 +104,7 @@ export function AdminProductBrowser({ products: initial }: { products: Product[]
   }
 
   function clearFilters() {
+    setProductTypeFilter("any");
     setMotorPhaseType("any");
     setStarterType("any");
     setMotorType("any");
@@ -126,6 +134,26 @@ export function AdminProductBrowser({ products: initial }: { products: Product[]
 
       {showFilters && (
         <div className="flex flex-wrap items-end gap-4 mb-6 rounded-lg border border-border p-4">
+          <div className="space-y-2">
+            <Label htmlFor="admin-product-type">Product Type</Label>
+            <Select
+              value={productTypeFilter}
+              onValueChange={(value) => setProductTypeFilter(value ?? "any")}
+            >
+              <SelectTrigger id="admin-product-type" className="w-52">
+                <SelectValue placeholder="Any type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="any">Any type</SelectItem>
+                {productTypes.map((t) => (
+                  <SelectItem key={t.name} value={t.name}>
+                    {t.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="admin-motor-phase">Motor Phase Type</Label>
             <Select value={motorPhaseType} onValueChange={(value) => setMotorPhaseType(value ?? "any")}>
@@ -258,14 +286,8 @@ export function AdminProductBrowser({ products: initial }: { products: Product[]
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
+              <TableHead>Type</TableHead>
               <TableHead>Price</TableHead>
-              <TableHead>Motor Phase</TableHead>
-              <TableHead>Starter</TableHead>
-              <TableHead>Motor Type</TableHead>
-              <TableHead>Source</TableHead>
-              <TableHead>Unit Type</TableHead>
-              <TableHead>Motors</TableHead>
-              <TableHead>Tanks</TableHead>
               <TableHead>Demo</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -278,14 +300,8 @@ export function AdminProductBrowser({ products: initial }: { products: Product[]
                   nativeButton={false}
                 >
                   <TableCell className="font-medium">{product.name}</TableCell>
+                  <TableCell>{product.productType}</TableCell>
                   <TableCell>₹{product.price.toLocaleString("en-IN")}</TableCell>
-                  <TableCell>{product.motorPhaseType || "-"}</TableCell>
-                  <TableCell>{product.starterType || "-"}</TableCell>
-                  <TableCell>{product.motorType || "-"}</TableCell>
-                  <TableCell>{product.waterSource || "-"}</TableCell>
-                  <TableCell>{product.unitType || product.timerType || "-"}</TableCell>
-                  <TableCell>{product.numberOfMotors || "-"}</TableCell>
-                  <TableCell>{product.numberOfTanks || "-"}</TableCell>
                   <TableCell>{product.demoUrl ? "Yes" : "-"}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
@@ -321,17 +337,24 @@ export function AdminProductBrowser({ products: initial }: { products: Product[]
                   </DialogHeader>
 
                   {product.images.length > 0 && (
-                    <div className="relative aspect-video w-full overflow-hidden rounded-lg border bg-muted">
+                    <div className="w-full overflow-hidden rounded-lg border bg-muted">
                       <Image
                         src={product.images[0]}
                         alt={product.name}
-                        fill
-                        className="object-cover"
+                        width={640}
+                        height={360}
+                        className="block aspect-video w-full h-auto object-cover"
                       />
                     </div>
                   )}
 
                   <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
+                    <div>
+                      <dt className="text-muted-foreground">Type</dt>
+                      <dd className="font-medium">
+                        {product.productType}
+                      </dd>
+                    </div>
                     <div>
                       <dt className="text-muted-foreground">Price</dt>
                       <dd className="font-medium">₹{product.price.toLocaleString("en-IN")}</dd>
@@ -340,40 +363,56 @@ export function AdminProductBrowser({ products: initial }: { products: Product[]
                       <dt className="text-muted-foreground">Demo</dt>
                       <dd className="font-medium">{product.demoUrl ? "Yes" : "Not provided"}</dd>
                     </div>
-                    <div>
-                      <dt className="text-muted-foreground">Motor Phase</dt>
-                      <dd className="font-medium">{product.motorPhaseType || "Not provided"}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-muted-foreground">Starter Type</dt>
-                      <dd className="font-medium">{product.starterType || "Not provided"}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-muted-foreground">Motor Type</dt>
-                      <dd className="font-medium">{product.motorType || "Not provided"}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-muted-foreground">Water Source</dt>
-                      <dd className="font-medium">{product.waterSource || "Not provided"}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-muted-foreground">Unit Type</dt>
-                      <dd className="font-medium">
-                        {product.unitType || product.timerType || "Not provided"}
-                      </dd>
-                    </div>
-                    <div>
-                      <dt className="text-muted-foreground">No. of Motors</dt>
-                      <dd className="font-medium">{product.numberOfMotors || "Not provided"}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-muted-foreground">No. of Overhead Tanks</dt>
-                      <dd className="font-medium">{product.numberOfTanks || "Not provided"}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-muted-foreground">Sump / Bore Capacity</dt>
-                      <dd className="font-medium">{product.sumpOrBoreCapacity || "Not provided"}</dd>
-                    </div>
+                    {(hasExtraEnquiry(product.productType, productTypes) ||
+                      product.motorPhaseType ||
+                      product.motorType ||
+                      product.starterType ||
+                      product.waterSource ||
+                      product.sumpOrBoreCapacity ||
+                      product.numberOfMotors ||
+                      product.numberOfTanks ||
+                      product.unitType ||
+                      product.timerType) && (
+                      <>
+                        <div className="col-span-2 border-t pt-3">
+                          <p className="text-sm font-medium">Extra Enquiry</p>
+                        </div>
+                        <div>
+                          <dt className="text-muted-foreground">Motor Phase</dt>
+                          <dd className="font-medium">{product.motorPhaseType || "Not provided"}</dd>
+                        </div>
+                        <div>
+                          <dt className="text-muted-foreground">Starter Type</dt>
+                          <dd className="font-medium">{product.starterType || "Not provided"}</dd>
+                        </div>
+                        <div>
+                          <dt className="text-muted-foreground">Motor Type</dt>
+                          <dd className="font-medium">{product.motorType || "Not provided"}</dd>
+                        </div>
+                        <div>
+                          <dt className="text-muted-foreground">Water Source</dt>
+                          <dd className="font-medium">{product.waterSource || "Not provided"}</dd>
+                        </div>
+                        <div>
+                          <dt className="text-muted-foreground">Unit Type</dt>
+                          <dd className="font-medium">
+                            {product.unitType || product.timerType || "Not provided"}
+                          </dd>
+                        </div>
+                        <div>
+                          <dt className="text-muted-foreground">No. of Motors</dt>
+                          <dd className="font-medium">{product.numberOfMotors || "Not provided"}</dd>
+                        </div>
+                        <div>
+                          <dt className="text-muted-foreground">No. of Overhead Tanks</dt>
+                          <dd className="font-medium">{product.numberOfTanks || "Not provided"}</dd>
+                        </div>
+                        <div>
+                          <dt className="text-muted-foreground">Sump / Bore Capacity</dt>
+                          <dd className="font-medium">{product.sumpOrBoreCapacity || "Not provided"}</dd>
+                        </div>
+                      </>
+                    )}
                   </dl>
 
                   <div className="border-t pt-3">

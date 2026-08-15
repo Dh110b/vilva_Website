@@ -11,7 +11,7 @@ export const ENQUIRY_FIELD_KEYS = [
 
 export type EnquiryFieldKey = (typeof ENQUIRY_FIELD_KEYS)[number];
 
-export type CustomFieldType = "text" | "dropdown";
+export type CustomFieldType = "text" | "number" | "dropdown";
 
 export type EnquiryFieldConfig = {
   key: string;
@@ -21,6 +21,13 @@ export type EnquiryFieldConfig = {
   type?: CustomFieldType;
   options?: string[];
 };
+
+export type EnquiryFormConfig = {
+  title: string;
+  fields: EnquiryFieldConfig[];
+};
+
+export const DEFAULT_ENQUIRY_SECTION_TITLE = "Extra Enquiry Details (optional)";
 
 const DEFAULT_LABELS: Record<EnquiryFieldKey, string> = {
   unitType: "Unit Type",
@@ -33,7 +40,9 @@ const DEFAULT_LABELS: Record<EnquiryFieldKey, string> = {
   numberOfMotors: "No. of Motors",
 };
 
-export function defaultEnquiryFieldConfig(): EnquiryFieldConfig[] {
+// Legacy defaults, kept only to normalize old saved configs from before
+// product types had their own independent, admin-built field lists.
+export function legacyDefaultEnquiryFieldConfig(): EnquiryFieldConfig[] {
   return ENQUIRY_FIELD_KEYS.map((key) => ({
     key,
     label: DEFAULT_LABELS[key],
@@ -50,7 +59,7 @@ function isValidCustomField(entry: unknown): entry is EnquiryFieldConfig {
   const e = entry as Record<string, unknown>;
   if (typeof e.key !== "string" || !e.key.trim()) return false;
   if (typeof e.label !== "string" || !e.label.trim()) return false;
-  if (e.type !== "text" && e.type !== "dropdown") return false;
+  if (e.type !== "text" && e.type !== "number" && e.type !== "dropdown") return false;
   if (e.type === "dropdown") {
     if (!Array.isArray(e.options)) return false;
     if (!e.options.every((o) => typeof o === "string")) return false;
@@ -59,10 +68,10 @@ function isValidCustomField(entry: unknown): entry is EnquiryFieldConfig {
 }
 
 export function normalizeEnquiryFieldConfig(
-  stored: unknown
+  stored: unknown,
+  fallback: EnquiryFieldConfig[] = []
 ): EnquiryFieldConfig[] {
-  const defaults = defaultEnquiryFieldConfig();
-  if (!Array.isArray(stored)) return defaults;
+  if (!Array.isArray(stored)) return fallback;
 
   const byKey = new Map<string, EnquiryFieldConfig>();
   for (const entry of stored) {
@@ -93,6 +102,6 @@ export function normalizeEnquiryFieldConfig(
 
   // Preserve exactly what's stored, in its saved order — including any built-in
   // fields the admin has deleted. (Only a missing/never-saved config falls back to
-  // defaults, handled by the !Array.isArray check above.)
+  // the provided fallback, handled by the !Array.isArray check above.)
   return Array.from(byKey.values());
 }

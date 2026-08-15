@@ -15,6 +15,7 @@ import {
 import { ProductCard } from "@/components/product-card";
 import type { Product } from "@/lib/data";
 import { useOptionLists } from "@/hooks/use-option-lists";
+import { useProductTypes } from "@/hooks/use-product-types";
 
 export type ProductWithRating = Product & { avgRating: number; reviewCount: number };
 
@@ -41,6 +42,7 @@ export function ProductBrowser({ products }: { products: ProductWithRating[] }) 
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [minRating, setMinRating] = useState("0");
+  const [productType, setProductType] = useState("any");
   const [motorPhaseType, setMotorPhaseType] = useState("any");
   const [starterType, setStarterType] = useState("any");
   const [motorType, setMotorType] = useState("any");
@@ -50,6 +52,7 @@ export function ProductBrowser({ products }: { products: ProductWithRating[] }) 
   const [numberOfTanks, setNumberOfTanks] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const { lists: optionLists } = useOptionLists();
+  const { types: productTypes } = useProductTypes();
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -66,6 +69,7 @@ export function ProductBrowser({ products }: { products: ProductWithRating[] }) 
       if (min !== undefined && p.price < min) return false;
       if (max !== undefined && p.price > max) return false;
       if (minRatingNum > 0 && p.avgRating < minRatingNum) return false;
+      if (productType !== "any" && p.productType !== productType) return false;
       if (motorPhaseType !== "any" && p.motorPhaseType !== motorPhaseType) return false;
       if (starterType !== "any" && p.starterType !== starterType) return false;
       if (motorType !== "any" && p.motorType !== motorType) return false;
@@ -100,6 +104,7 @@ export function ProductBrowser({ products }: { products: ProductWithRating[] }) 
     minPrice,
     maxPrice,
     minRating,
+    productType,
     motorPhaseType,
     starterType,
     motorType,
@@ -113,6 +118,7 @@ export function ProductBrowser({ products }: { products: ProductWithRating[] }) 
     minPrice ||
     maxPrice ||
     minRating !== "0" ||
+    productType !== "any" ||
     motorPhaseType !== "any" ||
     starterType !== "any" ||
     motorType !== "any" ||
@@ -125,6 +131,7 @@ export function ProductBrowser({ products }: { products: ProductWithRating[] }) 
     setMinPrice("");
     setMaxPrice("");
     setMinRating("0");
+    setProductType("any");
     setMotorPhaseType("any");
     setStarterType("any");
     setMotorType("any");
@@ -210,6 +217,23 @@ export function ProductBrowser({ products }: { products: ProductWithRating[] }) 
               </SelectContent>
             </Select>
           </div>
+          <div className="space-y-2">
+            <Label htmlFor="product-type">Product Type</Label>
+            <Select value={productType} onValueChange={(value) => setProductType(value ?? "any")}>
+              <SelectTrigger id="product-type" className="w-52">
+                <SelectValue placeholder="Any type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="any">Any type</SelectItem>
+                {productTypes.map((t) => (
+                  <SelectItem key={t.name} value={t.name}>
+                    {t.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="motor-phase">Motor Phase Type</Label>
             <Select value={motorPhaseType} onValueChange={(value) => setMotorPhaseType(value ?? "any")}>

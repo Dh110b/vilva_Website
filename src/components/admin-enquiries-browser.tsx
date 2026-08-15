@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -25,7 +25,8 @@ import { toast } from "sonner";
 import type { Enquiry } from "@/lib/data";
 import { ENQUIRY_STATUSES, type EnquiryStatus } from "@/lib/enquiry-status";
 import { cn } from "@/lib/utils";
-import { useEnquiryFieldConfig } from "@/hooks/use-enquiry-field-config";
+import { useProductTypes } from "@/hooks/use-product-types";
+import type { EnquiryFieldConfig } from "@/lib/enquiry-form-fields";
 
 type SortOption = "newest" | "oldest" | "name-asc";
 
@@ -49,14 +50,31 @@ export function AdminEnquiriesBrowser({ enquiries: initial }: { enquiries: Enqui
   const [sort, setSort] = useState<SortOption>("newest");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const { config: fieldConfig } = useEnquiryFieldConfig();
-  const customFieldLabels = useMemo(() => {
-    const map = new Map<string, string>();
-    for (const field of fieldConfig) {
-      if (field.custom) map.set(field.key, field.label);
-    }
-    return map;
-  }, [fieldConfig]);
+  const { types: productTypes } = useProductTypes();
+  const [customFieldLabels, setCustomFieldLabels] = useState<Map<string, string>>(new Map());
+
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all(
+      productTypes.map((t) =>
+        fetch(`/api/enquiry-form-fields?type=${encodeURIComponent(t.name)}`)
+          .then((res) => (res.ok ? res.json() : { fields: [] }))
+          .catch(() => ({ fields: [] as EnquiryFieldConfig[] }))
+      )
+    ).then((configs) => {
+      if (cancelled) return;
+      const map = new Map<string, string>();
+      for (const config of configs as { fields: EnquiryFieldConfig[] }[]) {
+        for (const field of config.fields) {
+          if (field.custom) map.set(field.key, field.label);
+        }
+      }
+      setCustomFieldLabels(map);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [productTypes]);
 
   const products = useMemo(
     () => Array.from(new Set(enquiries.map((e) => e.productName))).sort(),

@@ -2,8 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { getEnquiryFieldConfig, saveEnquiryFieldConfig } from "@/lib/data";
 import { ADMIN_COOKIE_NAME, isValidSessionToken } from "@/lib/auth";
 
-export async function GET() {
-  return NextResponse.json(await getEnquiryFieldConfig());
+export async function GET(req: NextRequest) {
+  const productType = req.nextUrl.searchParams.get("type");
+  if (!productType) {
+    return NextResponse.json({ error: "Missing product type" }, { status: 400 });
+  }
+  return NextResponse.json(await getEnquiryFieldConfig(productType));
 }
 
 export async function PUT(req: NextRequest) {
@@ -11,10 +15,14 @@ export async function PUT(req: NextRequest) {
   if (!(await isValidSessionToken(token))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  const productType = req.nextUrl.searchParams.get("type");
+  if (!productType) {
+    return NextResponse.json({ error: "Missing product type" }, { status: 400 });
+  }
   const body = await req.json();
-  if (!Array.isArray(body)) {
+  if (!body || typeof body.title !== "string" || !Array.isArray(body.fields)) {
     return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
   }
-  const saved = await saveEnquiryFieldConfig(body);
+  const saved = await saveEnquiryFieldConfig(productType, body.title, body.fields);
   return NextResponse.json(saved);
 }

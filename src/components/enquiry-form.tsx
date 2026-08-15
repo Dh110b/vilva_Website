@@ -18,6 +18,8 @@ import { toast } from "sonner";
 import { useOptionLists } from "@/hooks/use-option-lists";
 import { useEnquiryFieldConfig } from "@/hooks/use-enquiry-field-config";
 import { EnquiryFormFields } from "@/components/enquiry-form-fields";
+import { hasExtraEnquiry } from "@/lib/product-types";
+import { useProductTypes } from "@/hooks/use-product-types";
 
 const initialForm = {
   name: "",
@@ -38,12 +40,22 @@ const initialForm = {
   customFields: {} as Record<string, string>,
 };
 
-export function EnquiryForm({ productId, productName }: { productId: string; productName: string }) {
+export function EnquiryForm({
+  productId,
+  productName,
+  productType,
+}: {
+  productId: string;
+  productName: string;
+  productType?: string;
+}) {
   const [open, setOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState(initialForm);
   const { lists: optionLists } = useOptionLists();
-  const { config: fieldConfig } = useEnquiryFieldConfig();
+  const { title: sectionTitle, config: fieldConfig } = useEnquiryFieldConfig(productType);
+  const { types: productTypes } = useProductTypes();
+  const showExtraEnquiry = hasExtraEnquiry(productType, productTypes);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -128,25 +140,27 @@ export function EnquiryForm({ productId, productName }: { productId: string; pro
             />
           </div>
 
-          <div className="space-y-3 rounded-lg border p-4">
-            <div>
-              <p className="text-sm font-medium">Motor &amp; Pump Details (optional)</p>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Don&apos;t know these details?{" "}
-                <Link href="/contact" className="underline underline-offset-4" target="_blank">
-                  Contact us
-                </Link>{" "}
-                and we&apos;ll help you figure it out.
-              </p>
-            </div>
+          {showExtraEnquiry && fieldConfig.length > 0 && (
+            <div className="space-y-3 rounded-lg border p-4">
+              <div>
+                <p className="text-sm font-medium">{sectionTitle}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Don&apos;t know these details?{" "}
+                  <Link href="/contact" className="underline underline-offset-4" target="_blank">
+                    Contact us
+                  </Link>{" "}
+                  and we&apos;ll help you figure it out.
+                </p>
+              </div>
 
-            <EnquiryFormFields
-              config={fieldConfig}
-              form={form}
-              setForm={setForm}
-              optionLists={optionLists}
-            />
-          </div>
+              <EnquiryFormFields
+                config={fieldConfig}
+                form={form}
+                setForm={setForm}
+                optionLists={optionLists}
+              />
+            </div>
+          )}
 
           <div className="space-y-2">
             <Label htmlFor="message">Additional Requirements (optional)</Label>

@@ -93,7 +93,13 @@ export default async function ProductPage({
           { label: "Products", href: "/products" },
           { label: product.name, href: `/products/${product.id}` },
         ]}
-        enquiryAction={<EnquiryForm productId={product.id} productName={product.name} />}
+        enquiryAction={
+          <EnquiryForm
+            productId={product.id}
+            productName={product.name}
+            productType={product.productType}
+          />
+        }
       />
     </>
   );

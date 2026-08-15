@@ -1,10 +1,13 @@
 import { sql } from "@/lib/db";
 import { OPTION_CATEGORIES, type OptionCategory } from "@/lib/motor-options";
+import { DEFAULT_PRODUCT_TYPES, type ProductTypeDef } from "@/lib/product-types";
 import { ENQUIRY_STATUSES, type EnquiryStatus } from "@/lib/enquiry-status";
 import {
-  defaultEnquiryFieldConfig,
+  legacyDefaultEnquiryFieldConfig,
   normalizeEnquiryFieldConfig,
+  DEFAULT_ENQUIRY_SECTION_TITLE,
   type EnquiryFieldConfig,
+  type EnquiryFormConfig,
 } from "@/lib/enquiry-form-fields";
 
 export { ENQUIRY_STATUSES, type EnquiryStatus };
@@ -16,6 +19,7 @@ export type Product = {
   price: number;
   images: string[];
   demoUrl?: string;
+  productType: string;
   sumpOrBoreCapacity?: string;
   motorPhaseType?: string;
   motorType?: string;
@@ -84,6 +88,7 @@ function rowToProduct(row: any): Product {
     price: Number(row.price),
     images: row.images ?? [],
     demoUrl: row.demo_url ?? undefined,
+    productType: row.product_type ?? "Smart Auto Starter",
     sumpOrBoreCapacity: row.sump_or_bore_capacity ?? undefined,
     motorPhaseType: row.motor_phase_type ?? undefined,
     motorType: row.motor_type ?? undefined,
@@ -112,12 +117,12 @@ export async function createProduct(
 ): Promise<Product> {
   const rows = await sql`
     insert into products (
-      name, description, price, images, demo_url, sump_or_bore_capacity,
+      name, description, price, images, demo_url, product_type, sump_or_bore_capacity,
       motor_phase_type, motor_type, starter_type, number_of_motors,
       water_source, number_of_tanks, timer_type, unit_type
     ) values (
       ${input.name}, ${input.description}, ${input.price}, ${sql.json(input.images ?? [])},
-      ${input.demoUrl ?? null}, ${input.sumpOrBoreCapacity ?? null},
+      ${input.demoUrl ?? null}, ${input.productType}, ${input.sumpOrBoreCapacity ?? null},
       ${input.motorPhaseType ?? null}, ${input.motorType ?? null}, ${input.starterType ?? null},
       ${input.numberOfMotors ?? null}, ${input.waterSource ?? null}, ${input.numberOfTanks ?? null},
       ${input.timerType ?? null}, ${input.unitType ?? null}
@@ -141,6 +146,7 @@ export async function updateProduct(
       price = ${merged.price},
       images = ${sql.json(merged.images ?? [])},
       demo_url = ${merged.demoUrl ?? null},
+      product_type = ${merged.productType},
       sump_or_bore_capacity = ${merged.sumpOrBoreCapacity ?? null},
       motor_phase_type = ${merged.motorPhaseType ?? null},
       motor_type = ${merged.motorType ?? null},
@@ -432,18 +438,149 @@ export async function setOptionList(
   return lists;
 }
 
+const PRODUCT_TYPES_KV_KEY = "product_types";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function normalizeProductType(entry: any): ProductTypeDef {
+  return {
+    name: entry.name,
+    // Back-compat: this field used to be called `isMotor`.
+    isExtraEnquiry: entry.isExtraEnquiry ?? entry.isMotor ?? false,
+  };
+}
+
+export async function getProductTypes(): Promise<ProductTypeDef[]> {
+  const stored = await getKv<ProductTypeDef[]>(PRODUCT_TYPES_KV_KEY);
+  if (!stored || !Array.isArray(stored) || stored.length === 0) {
+    await setKv(PRODUCT_TYPES_KV_KEY, DEFAULT_PRODUCT_TYPES);
+    return DEFAULT_PRODUCT_TYPES;
+  }
+  return stored.map(normalizeProductType);
+}
+
+export async function addProductType(
+  name: string,
+  isExtraEnquiry: boolean
+): Promise<ProductTypeDef[]> {
+  const trimmed = name.trim();
+  const types = await getProductTypes();
+  if (!trimmed || types.some((t) => t.name === trimmed)) return types;
+  const next = [...types, { name: trimmed, isExtraEnquiry }];
+  await setKv(PRODUCT_TYPES_KV_KEY, next);
+  return next;
+}
+
+export async function updateProductType(
+  oldName: string,
+  newName: string,
+  isExtraEnquiry: boolean
+): Promise<ProductTypeDef[]> {
+  const trimmed = newName.trim();
+  const types = await getProductTypes();
+  if (!trimmed) return types;
+  if (trimmed !== oldName && types.some((t) => t.name === trimmed)) return types;
+
+  const next = types.map((t) => (t.name === oldName ? { name: trimmed, isExtraEnquiry } : t));
+  await setKv(PRODUCT_TYPES_KV_KEY, next);
+
+  if (trimmed !== oldName) {
+    await sql`update products set product_type = ${trimmed} where product_type = ${oldName}`;
+  }
+  return next;
+}
+
+export async function reorderProductTypes(order: string[]): Promise<ProductTypeDef[]> {
+  const types = await getProductTypes();
+  const byName = new Map(types.map((t) => [t.name, t]));
+  const reordered: ProductTypeDef[] = [];
+  for (const name of order) {
+    const t = byName.get(name);
+    if (t) {
+      reordered.push(t);
+      byName.delete(name);
+    }
+  }
+  // Anything not included in `order` (shouldn't normally happen) stays appended at the end.
+  reordered.push(...byName.values());
+  await setKv(PRODUCT_TYPES_KV_KEY, reordered);
+  return reordered;
+}
+
+export async function countProductsOfType(name: string): Promise<number> {
+  const rows = await sql`select count(*)::int as count from products where product_type = ${name}`;
+  return rows[0]?.count ?? 0;
+}
+
+export async function deleteProductType(name: string): Promise<ProductTypeDef[]> {
+  const types = await getProductTypes();
+  const next = types.filter((t) => t.name !== name);
+  await setKv(PRODUCT_TYPES_KV_KEY, next);
+  return next;
+}
+
 const ENQUIRY_FIELDS_KV_KEY = "enquiry_form_fields";
 
-export async function getEnquiryFieldConfig(): Promise<EnquiryFieldConfig[]> {
-  const stored = await getKv<EnquiryFieldConfig[]>(ENQUIRY_FIELDS_KV_KEY);
-  return normalizeEnquiryFieldConfig(stored ?? defaultEnquiryFieldConfig());
+type EnquiryFormConfigByType = Record<string, EnquiryFormConfig>;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function normalizeStoredEnquiryEntry(entry: any): EnquiryFormConfig {
+  // Legacy format: a bare field array with no title.
+  if (Array.isArray(entry)) {
+    return {
+      title: DEFAULT_ENQUIRY_SECTION_TITLE,
+      fields: normalizeEnquiryFieldConfig(entry, legacyDefaultEnquiryFieldConfig()),
+    };
+  }
+  return {
+    title:
+      typeof entry?.title === "string" && entry.title.trim()
+        ? entry.title
+        : DEFAULT_ENQUIRY_SECTION_TITLE,
+    fields: normalizeEnquiryFieldConfig(entry?.fields),
+  };
+}
+
+async function getEnquiryFieldConfigMap(): Promise<EnquiryFormConfigByType> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const stored = await getKv<any>(ENQUIRY_FIELDS_KV_KEY);
+  if (!stored) return {};
+  // Very old legacy format: single array shared globally by every product type.
+  if (Array.isArray(stored)) return { __default__: normalizeStoredEnquiryEntry(stored) };
+  const map: EnquiryFormConfigByType = {};
+  for (const [key, value] of Object.entries(stored)) {
+    map[key] = normalizeStoredEnquiryEntry(value);
+  }
+  return map;
+}
+
+export async function getEnquiryFieldConfig(productType: string): Promise<EnquiryFormConfig> {
+  const map = await getEnquiryFieldConfigMap();
+  const stored = map[productType] ?? map.__default__;
+  if (stored) return stored;
+  // A product type with Extra Enquiry on but no explicitly saved config yet
+  // starts pre-filled with the standard motor/pump field set (as it always
+  // has) so existing product types don't lose their enquiry fields — the
+  // admin can still add, remove, or clear them via the field builder.
+  const types = await getProductTypes();
+  const isExtraEnquiry = types.find((t) => t.name === productType)?.isExtraEnquiry ?? false;
+  return {
+    title: DEFAULT_ENQUIRY_SECTION_TITLE,
+    fields: isExtraEnquiry ? legacyDefaultEnquiryFieldConfig() : [],
+  };
 }
 
 export async function saveEnquiryFieldConfig(
-  config: EnquiryFieldConfig[]
-): Promise<EnquiryFieldConfig[]> {
-  const normalized = normalizeEnquiryFieldConfig(config);
-  await setKv(ENQUIRY_FIELDS_KV_KEY, normalized);
+  productType: string,
+  title: string,
+  fields: EnquiryFieldConfig[]
+): Promise<EnquiryFormConfig> {
+  const normalized: EnquiryFormConfig = {
+    title: title.trim() || DEFAULT_ENQUIRY_SECTION_TITLE,
+    fields: normalizeEnquiryFieldConfig(fields),
+  };
+  const map = await getEnquiryFieldConfigMap();
+  map[productType] = normalized;
+  await setKv(ENQUIRY_FIELDS_KV_KEY, map);
   return normalized;
 }
 

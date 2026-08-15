@@ -20,6 +20,8 @@ import { useOptionLists } from "@/hooks/use-option-lists";
 import { ManageOptionValuesDialog } from "@/components/manage-option-values-dialog";
 import { MotorCapacityField } from "@/components/motor-capacity-field";
 import { X, Settings } from "lucide-react";
+import { hasExtraEnquiry } from "@/lib/product-types";
+import { useProductTypes } from "@/hooks/use-product-types";
 
 async function uploadFile(file: File): Promise<string> {
   const formData = new FormData();
@@ -30,8 +32,34 @@ async function uploadFile(file: File): Promise<string> {
   return data.url as string;
 }
 
-export function ProductForm({ product }: { product?: Product }) {
+export function ProductForm({
+  product,
+  productType,
+}: {
+  product?: Product;
+  productType?: string;
+}) {
   const router = useRouter();
+  const { types: productTypes } = useProductTypes();
+  const [resolvedProductType, setResolvedProductType] = useState<string>(
+    (product?.productType ?? productType) as string
+  );
+  const hasExistingSpecData = !!(
+    product &&
+    (product.motorPhaseType ||
+      product.motorType ||
+      product.starterType ||
+      product.waterSource ||
+      product.sumpOrBoreCapacity ||
+      product.numberOfMotors ||
+      product.numberOfTanks ||
+      product.unitType ||
+      product.timerType)
+  );
+  // Always show the section if the product already has spec values saved,
+  // even if the type's Extra Enquiry flag was later turned off — otherwise
+  // those existing inputs would be hidden (though not lost) from the form.
+  const isMotor = hasExtraEnquiry(resolvedProductType, productTypes) || hasExistingSpecData;
   const [name, setName] = useState(product?.name ?? "");
   const [description, setDescription] = useState(product?.description ?? "");
   const [price, setPrice] = useState(product?.price?.toString() ?? "");
@@ -91,6 +119,7 @@ export function ProductForm({ product }: { product?: Product }) {
         price: Number(price),
         images,
         demoUrl,
+        productType: resolvedProductType,
         sumpOrBoreCapacity,
         motorPhaseType,
         motorType,
@@ -122,6 +151,32 @@ export function ProductForm({ product }: { product?: Product }) {
       onSubmit={handleSubmit}
       className="w-full rounded-lg border border-foreground/25 bg-white/10 p-6 shadow-lg backdrop-blur-md dark:border-white/20 dark:bg-white/5 space-y-6"
     >
+      {product ? (
+        <div className="space-y-2">
+          <Label htmlFor="productType">Product Type</Label>
+          <Select
+            value={resolvedProductType}
+            onValueChange={(value) => value && setResolvedProductType(value)}
+          >
+            <SelectTrigger id="productType" className="w-full sm:w-96">
+              <SelectValue placeholder="Select product type" />
+            </SelectTrigger>
+            <SelectContent>
+              {productTypes.map((t) => (
+                <SelectItem key={t.name} value={t.name}>
+                  {t.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      ) : (
+        <div className="rounded-lg border bg-muted/40 px-4 py-2 text-sm">
+          <span className="text-muted-foreground">Product type: </span>
+          <span className="font-medium">{resolvedProductType}</span>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div className="space-y-2 sm:col-span-2 lg:col-span-1">
           <Label htmlFor="name">Product Name</Label>
@@ -191,13 +246,15 @@ export function ProductForm({ product }: { product?: Product }) {
         </div>
       </div>
 
+      {isMotor && (
       <div className="space-y-3 rounded-lg border p-4">
         <div>
-          <p className="text-sm font-medium">Motor &amp; Pump Compatibility</p>
+          <p className="text-sm font-medium">Extra Enquiry</p>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Used as filters on the Products page so customers can find a compatible controller.
-            Click the <Settings className="inline size-3" /> icon next to a field to add or remove
-            its dropdown options.
+            Motor &amp; pump compatibility fields for this product type — used as filters on the
+            Products page so customers can find a compatible unit. Click the{" "}
+            <Settings className="inline size-3" /> icon next to a field to add or remove its
+            dropdown options.
           </p>
         </div>
 
@@ -363,6 +420,7 @@ export function ProductForm({ product }: { product?: Product }) {
         </div>
         </div>
       </div>
+      )}
 
       <div className="flex gap-3">
         <Button type="submit" disabled={submitting}>

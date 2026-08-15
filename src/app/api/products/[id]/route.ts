@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { deleteProduct, getProduct, updateProduct } from "@/lib/data";
+import { deleteProduct, getProduct, getProductTypes, updateProduct } from "@/lib/data";
 import { ADMIN_COOKIE_NAME, isValidSessionToken } from "@/lib/auth";
+import { isValidProductType } from "@/lib/product-types";
 
 async function requireAuth(req: NextRequest) {
   const token = req.cookies.get(ADMIN_COOKIE_NAME)?.value;
@@ -26,6 +27,12 @@ export async function PUT(
   }
   const { id } = await params;
   const body = await req.json();
+  if (body.productType !== undefined) {
+    const productTypes = await getProductTypes();
+    if (!isValidProductType(body.productType, productTypes)) {
+      return NextResponse.json({ error: "Invalid product type" }, { status: 400 });
+    }
+  }
   const product = await updateProduct(id, {
     ...body,
     price: body.price !== undefined ? Number(body.price) : undefined,

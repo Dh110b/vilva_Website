@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createProduct, getProducts } from "@/lib/data";
+import { createProduct, getProducts, getProductTypes } from "@/lib/data";
 import { ADMIN_COOKIE_NAME, isValidSessionToken } from "@/lib/auth";
+import { isValidProductType } from "@/lib/product-types";
 
 export async function GET() {
   return NextResponse.json(await getProducts());
@@ -19,6 +20,7 @@ export async function POST(req: NextRequest) {
     price,
     images,
     demoUrl,
+    productType,
     sumpOrBoreCapacity,
     motorPhaseType,
     motorType,
@@ -30,7 +32,13 @@ export async function POST(req: NextRequest) {
     unitType,
   } = body;
 
-  if (!name || !description || price === undefined) {
+  const productTypes = await getProductTypes();
+  if (
+    !name ||
+    !description ||
+    price === undefined ||
+    !isValidProductType(productType, productTypes)
+  ) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
   }
 
@@ -40,6 +48,7 @@ export async function POST(req: NextRequest) {
     price: Number(price),
     images: Array.isArray(images) ? images : [],
     demoUrl: demoUrl || undefined,
+    productType,
     sumpOrBoreCapacity: sumpOrBoreCapacity || undefined,
     motorPhaseType: motorPhaseType || undefined,
     motorType: motorType || undefined,
