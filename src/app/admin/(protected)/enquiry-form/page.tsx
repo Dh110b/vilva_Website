@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getEnquiryFieldConfig, getProductTypes } from "@/lib/data";
-import { AdminEnquiryFieldBuilder } from "@/components/admin-enquiry-field-builder";
+import { AdminEnquiryFormGate } from "@/components/admin-enquiry-form-gate";
+import { AdminEnquiryTypePicker } from "@/components/admin-enquiry-type-picker";
 
 export default async function AdminEnquiryFormPage({
   searchParams,
@@ -18,17 +19,7 @@ export default async function AdminEnquiryFormPage({
         <p className="text-muted-foreground mb-6">
           Which product type do you want to customize the Send Enquiry form for?
         </p>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {productTypes.map((t) => (
-            <Link
-              key={t.name}
-              href={`/admin/enquiry-form?type=${encodeURIComponent(t.name)}`}
-              className="rounded-lg border border-foreground/25 bg-white/10 p-5 shadow-sm backdrop-blur-md transition-colors hover:border-foreground/50 dark:border-white/20 dark:bg-white/5"
-            >
-              <p className="font-medium">{t.name}</p>
-            </Link>
-          ))}
-        </div>
+        <AdminEnquiryTypePicker types={productTypes} />
       </div>
     );
   }
@@ -43,17 +34,11 @@ export default async function AdminEnquiryFormPage({
           Switch product type
         </Link>
       </div>
-      {!selected.isExtraEnquiry ? (
-        <p className="text-sm text-warning-foreground mb-6">
-          Extra Enquiry is off for this product type, so this section won&apos;t appear on the
-          site yet. Turn it on from the Product Types manager next to Add Product.
-        </p>
-      ) : (
-        <div className="mb-4" />
-      )}
-      <AdminEnquiryFieldBuilder
+      <div className="mb-4" />
+      <AdminEnquiryFormGate
         key={selected.name}
         productType={selected.name}
+        initialIsExtraEnquiry={selected.isExtraEnquiry}
         initialTitle={config.title}
         initialConfig={config.fields}
       />
