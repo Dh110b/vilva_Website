@@ -233,6 +233,13 @@ const Navbar1 = ({
                       exit={{ opacity: 0, height: 0 }}
                       className="flex flex-col space-y-4 pl-4 pt-4 overflow-hidden"
                     >
+                      <Link
+                        href="/products"
+                        className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                        onClick={toggleMenu}
+                      >
+                        All Products
+                      </Link>
                       {productTypes.map((type) => (
                         <Link
                           key={type.name}
