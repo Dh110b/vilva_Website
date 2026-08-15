@@ -29,7 +29,7 @@ const Navbar1 = ({
   const toggleMenu = () => setIsOpen(!isOpen)
 
   return (
-    <div className="sticky top-0 z-40 flex justify-center w-full py-3 px-4">
+    <div className="sticky top-0 z-50 flex justify-center w-full py-3 px-4">
       <div className="flex items-center justify-between px-5 py-1.5 border border-foreground/25 bg-white/10 backdrop-blur-md rounded-full shadow-lg w-full max-w-6xl relative z-10 dark:border-white/20 dark:bg-white/5">
         <div className="flex items-center shrink-0">
           <motion.div
@@ -90,7 +90,7 @@ const Navbar1 = ({
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.15 }}
-                  className="absolute left-0 top-full pt-3 w-56"
+                  className="absolute left-0 top-full pt-3 w-56 z-50"
                 >
                   <div className="rounded-2xl border border-foreground/15 bg-background/95 backdrop-blur-md shadow-lg py-2 dark:border-white/10">
                     <Link
