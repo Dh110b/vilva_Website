@@ -147,12 +147,12 @@ export function ProductTypesEditor({
   return (
     <div className="space-y-2">
       {types.length > 0 && (
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Input
             placeholder="Filter product types..."
             value={filterQuery}
             onChange={(e) => setFilterQuery(e.target.value)}
-            className="h-8 flex-1"
+            className="h-8 min-w-[8rem] flex-1"
           />
           <Button
             type="button"
@@ -160,6 +160,7 @@ export function ProductTypesEditor({
             size="sm"
             disabled={busy}
             onClick={sortAlphabetically}
+            className="shrink-0"
           >
             <ArrowDownAZ className="size-4" /> Sort A-Z
           </Button>
@@ -175,7 +176,7 @@ export function ProductTypesEditor({
           {filteredTypes.map((type) => (
             <li
               key={type.name}
-              className="flex items-center gap-2 rounded-md border px-2 py-1.5 text-sm"
+              className="flex flex-wrap items-center gap-2 rounded-md border px-2 py-1.5 text-sm"
             >
               <div className="flex flex-col shrink-0">
                 <button
@@ -203,7 +204,7 @@ export function ProductTypesEditor({
               {editingName === type.name ? (
                 <Input
                   autoFocus
-                  className="h-7 flex-1"
+                  className="h-7 flex-1 min-w-[8rem]"
                   value={editingText}
                   onChange={(e) => setEditingText(e.target.value)}
                   onBlur={() => renameType(type.name, editingText)}
@@ -219,7 +220,8 @@ export function ProductTypesEditor({
               ) : (
                 <button
                   type="button"
-                  className="flex-1 truncate text-left hover:underline underline-offset-2"
+                  className="min-w-[8rem] flex-1 truncate text-left hover:underline underline-offset-2"
+                  title={type.name}
                   onClick={() => {
                     setEditingName(type.name);
                     setEditingText(type.name);

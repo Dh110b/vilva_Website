@@ -316,7 +316,10 @@ export function AdminEnquiriesBrowser({ enquiries: initial }: { enquiries: Enqui
                         </Badge>
                       </TableCell>
                     </DialogTrigger>
-                    <DialogContent className="max-h-[90vh] overflow-y-auto max-w-lg" initialFocus={false}>
+                    <DialogContent
+                      className="max-h-[90vh] overflow-y-auto max-w-lg sm:max-w-lg"
+                      initialFocus={false}
+                    >
                       <DialogHeader>
                         <DialogTitle>Enquiry from {enquiry.name}</DialogTitle>
                       </DialogHeader>

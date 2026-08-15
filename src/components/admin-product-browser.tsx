@@ -331,7 +331,10 @@ export function AdminProductBrowser({ products: initial }: { products: Product[]
                     </div>
                   </TableCell>
                 </DialogTrigger>
-                <DialogContent className="max-h-[90vh] overflow-y-auto max-w-lg" initialFocus={false}>
+                <DialogContent
+                  className="max-h-[90vh] overflow-y-auto max-w-lg sm:max-w-lg"
+                  initialFocus={false}
+                >
                   <DialogHeader>
                     <DialogTitle>{product.name}</DialogTitle>
                   </DialogHeader>
