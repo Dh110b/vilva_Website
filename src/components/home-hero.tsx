@@ -23,7 +23,7 @@ export function HomeHero() {
           Stop checking the tank. Stop flipping switches. This Automatic Water Level Controller handles your pump on its own overflow-proof, dry-run-proof, effortless.
           <br />
           <span
-            className="block whitespace-nowrap text-center"
+            className="block whitespace-nowrap text-center font-bold"
             style={{ fontSize: "clamp(0.65rem, 2.3vw, 1.125rem)" }}
           >
             Proudly indigenous, made in India — and we support custom products tailored to your needs.
