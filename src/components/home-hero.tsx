@@ -11,8 +11,14 @@ export function HomeHero() {
       backgroundImageUrl=""
       logo={null}
       navLinks={[]}
-      title="Water Problems? We've Got It Covered."
-      description="Stop checking the tank. Stop flipping switches. This Automatic Water Level Controller handles your pump on its own — overflow-proof, dry-run-proof, effortless."
+      title={
+        <>
+          <span className="whitespace-nowrap">Intelligent Automation.</span>
+          <br />
+          <span className="whitespace-nowrap text-[0.7em]">The Future Of Water Level Management.</span>
+        </>
+      }
+      description="Stop checking the tank. Stop flipping switches. This Automatic Water Level Controller handles your pump on its own — overflow-proof, dry-run-proof, effortless. Proudly indigenous, made in India — and we support custom products tailored to your needs."
       ctaButton={{
         text: "Get a Quote",
         onClick: () => router.push("/contact"),

@@ -15,7 +15,7 @@ interface AnimatedHeroProps {
   logo: React.ReactNode;
   navLinks: NavLink[];
   topRightAction?: React.ReactNode;
-  title: string;
+  title: React.ReactNode;
   description: string;
   ctaButton: {
     text: string;
@@ -117,23 +117,24 @@ export const AnimatedHero = ({
         initial="hidden"
         animate="visible"
         className={cn(
-          "relative z-10 flex flex-col items-start justify-center text-left px-6 md:px-12 max-w-4xl w-full",
+          "relative z-10 flex flex-col items-center justify-center text-center px-6 md:px-12 max-w-4xl w-full mx-auto",
           backgroundImageUrl ? "text-white" : "text-foreground"
         )}
       >
         <motion.h1
           variants={itemVariants}
           className={cn(
-            "text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl",
+            "font-bold tracking-tight leading-tight",
             backgroundImageUrl ? "text-primary-foreground" : "text-foreground"
           )}
+          style={{ fontSize: "clamp(1.5rem, 6vw, 4.5rem)" }}
         >
           {title}
         </motion.h1>
         <motion.p
           variants={itemVariants}
           className={cn(
-            "mt-6 max-w-2xl text-lg leading-8",
+            "mt-6 max-w-2xl text-lg leading-8 mx-auto",
             backgroundImageUrl ? "text-primary-foreground/80" : "text-muted-foreground"
           )}
         >
@@ -141,7 +142,7 @@ export const AnimatedHero = ({
         </motion.p>
         <motion.div
           variants={itemVariants}
-          className="mt-10 flex items-center gap-x-4"
+          className="mt-10 flex items-center justify-center gap-x-4"
         >
           <Button onClick={ctaButton.onClick} size="lg" className={glassButtonClassName}>
             {ctaButton.text}
