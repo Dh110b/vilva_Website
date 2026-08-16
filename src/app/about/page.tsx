@@ -25,18 +25,28 @@ export default function AboutPage() {
           </h2>
           <p>
             Founded on the virtues of integrity, honesty, and high-quality
-            assistance, M/s. Manjushree Enterprises is a leading supplier and
-            service provider of a comprehensive range of premium products.
-            Through our commitment to transparent dealing and business
-            ethics, we have established a strong market presence across
+            assistance, M/s. Manjushree Enterprises is a leading
+            manufacturer, supplier, and service provider of a comprehensive
+            range of premium industrial products. Through our unwavering
+            commitment to transparent dealings and strict business ethics,
+            we have established a commanding market presence across
             Karnataka and Tamil Nadu.
+          </p>
+          <p className="mt-3">
+            As a proud proponent of indigenous manufacturing, we specialize
+            in high-precision, locally engineered solutions that compete on
+            a global scale. We are fully equipped to support Original
+            Equipment Manufacturer (OEM) partners, delivering fully
+            customized products tailored to your precise technical
+            blueprints and operational requirements.
           </p>
           <p className="mt-3">
             Under the visionary guidance of our Promoter, Mr. A. Vijaya
             Kumar, our technically efficient team works untiringly to drive
-            the company forward, offering innovative products and
-            customized, value-added services tailored to the precise needs
-            of our clients.
+            the company forward. We seamlessly blend native innovation with
+            specialized, value-added services—ensuring your enterprise
+            receives the exact tools, scalability, and bespoke engineering
+            it needs to succeed.
           </p>
         </section>
 
