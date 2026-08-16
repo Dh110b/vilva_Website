@@ -18,7 +18,18 @@ export function HomeHero() {
           <span className="whitespace-nowrap text-[0.7em]">The Future Of Water Level Management.</span>
         </>
       }
-      description="Stop checking the tank. Stop flipping switches. This Automatic Water Level Controller handles your pump on its own — overflow-proof, dry-run-proof, effortless. Proudly indigenous, made in India — and we support custom products tailored to your needs."
+      description={
+        <>
+          Stop checking the tank. Stop flipping switches. This Automatic Water Level Controller handles your pump on its own overflow-proof, dry-run-proof, effortless.
+          <br />
+          <span
+            className="block whitespace-nowrap text-center"
+            style={{ fontSize: "clamp(0.65rem, 2.3vw, 1.125rem)" }}
+          >
+            Proudly indigenous, made in India — and we support custom products tailored to your needs.
+          </span>
+        </>
+      }
       ctaButton={{
         text: "Get a Quote",
         onClick: () => router.push("/contact"),

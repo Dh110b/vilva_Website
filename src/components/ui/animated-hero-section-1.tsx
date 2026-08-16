@@ -16,7 +16,7 @@ interface AnimatedHeroProps {
   navLinks: NavLink[];
   topRightAction?: React.ReactNode;
   title: React.ReactNode;
-  description: string;
+  description: React.ReactNode;
   ctaButton: {
     text: string;
     onClick: () => void;
@@ -117,7 +117,7 @@ export const AnimatedHero = ({
         initial="hidden"
         animate="visible"
         className={cn(
-          "relative z-10 flex flex-col items-center justify-center text-center px-6 md:px-12 max-w-4xl w-full mx-auto",
+          "relative z-10 flex flex-col items-center justify-center text-center px-6 md:px-12 max-w-6xl w-full mx-auto",
           backgroundImageUrl ? "text-white" : "text-foreground"
         )}
       >
@@ -134,7 +134,7 @@ export const AnimatedHero = ({
         <motion.p
           variants={itemVariants}
           className={cn(
-            "mt-6 max-w-2xl text-lg leading-8 mx-auto",
+            "mt-6 max-w-4xl text-lg leading-8 mx-auto",
             backgroundImageUrl ? "text-primary-foreground/80" : "text-muted-foreground"
           )}
         >
