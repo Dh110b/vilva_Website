@@ -1,6 +1,7 @@
 import { sql } from "@/lib/db";
 import { OPTION_CATEGORIES, type OptionCategory } from "@/lib/motor-options";
 import { DEFAULT_PRODUCT_TYPES, type ProductTypeDef } from "@/lib/product-types";
+import { DEFAULT_NETWORKS, type NetworkEntry } from "@/lib/networks";
 import { ENQUIRY_STATUSES, type EnquiryStatus } from "@/lib/enquiry-status";
 import {
   legacyDefaultEnquiryFieldConfig,
@@ -515,6 +516,59 @@ export async function deleteProductType(name: string): Promise<ProductTypeDef[]>
   const types = await getProductTypes();
   const next = types.filter((t) => t.name !== name);
   await setKv(PRODUCT_TYPES_KV_KEY, next);
+  return next;
+}
+
+const NETWORKS_KV_KEY = "networks";
+
+export async function getNetworks(): Promise<NetworkEntry[]> {
+  const stored = await getKv<NetworkEntry[]>(NETWORKS_KV_KEY);
+  if (!stored || !Array.isArray(stored)) {
+    await setKv(NETWORKS_KV_KEY, DEFAULT_NETWORKS);
+    return DEFAULT_NETWORKS;
+  }
+  return stored;
+}
+
+export async function addNetwork(
+  input: Omit<NetworkEntry, "id">
+): Promise<NetworkEntry[]> {
+  const networks = await getNetworks();
+  const next = [...networks, { id: crypto.randomUUID(), ...input }];
+  await setKv(NETWORKS_KV_KEY, next);
+  return next;
+}
+
+export async function updateNetwork(
+  id: string,
+  input: Omit<NetworkEntry, "id">
+): Promise<NetworkEntry[]> {
+  const networks = await getNetworks();
+  const next = networks.map((n) => (n.id === id ? { id, ...input } : n));
+  await setKv(NETWORKS_KV_KEY, next);
+  return next;
+}
+
+export async function reorderNetworks(order: string[]): Promise<NetworkEntry[]> {
+  const networks = await getNetworks();
+  const byId = new Map(networks.map((n) => [n.id, n]));
+  const reordered: NetworkEntry[] = [];
+  for (const id of order) {
+    const n = byId.get(id);
+    if (n) {
+      reordered.push(n);
+      byId.delete(id);
+    }
+  }
+  reordered.push(...byId.values());
+  await setKv(NETWORKS_KV_KEY, reordered);
+  return reordered;
+}
+
+export async function deleteNetwork(id: string): Promise<NetworkEntry[]> {
+  const networks = await getNetworks();
+  const next = networks.filter((n) => n.id !== id);
+  await setKv(NETWORKS_KV_KEY, next);
   return next;
 }
 

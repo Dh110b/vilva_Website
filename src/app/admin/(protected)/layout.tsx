@@ -19,6 +19,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Link href="/admin/enquiry-form" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
               Send Enquiry Form
             </Link>
+            <Link href="/admin/networks" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+              Network
+            </Link>
             <Link href="/admin/storage" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
               Storage
             </Link>
@@ -39,6 +42,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </Link>
           <Link href="/admin/enquiry-form" className="text-sm font-medium hover:underline">
             Send Enquiry Form
+          </Link>
+          <Link href="/admin/networks" className="text-sm font-medium hover:underline">
+            Network
           </Link>
           <Link href="/admin/storage" className="text-sm font-medium hover:underline">
             Storage

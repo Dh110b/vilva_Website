@@ -12,6 +12,7 @@ import type { ProductTypeDef } from "@/lib/product-types"
 const homeItem = { label: "Home", href: "/" }
 const afterProductsItems = [
   { label: "About Us", href: "/about" },
+  { label: "Networks", href: "/networks" },
   { label: "Contact Us", href: "/contact" },
 ]
 
