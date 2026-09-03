@@ -12,6 +12,7 @@ Product showcase and enquiry site for **Vilva**, a MicroComputer Automatic Water
   - Manage enquiries — filter/sort, view full details, and track status (New / Pending / Done / Cancelled).
   - **Send Enquiry form builder** (`/admin/enquiry-form`) — reorder, relabel, show/hide the Motor & Pump Details fields, and add/remove/reorder the dropdown values customers pick from, all without touching code.
   - Manage product reviews and replies.
+  - Manage the dealer/distributor **Networks** directory shown on the public `/networks` page.
 - **Two-factor admin login** — password, then a one-time code emailed via [Resend](https://resend.com).
 - **Underwater-themed UI** — animated background with glass/frosted panels throughout, built from the Vilva logo's color palette.
 - Enquiry email notifications, contact page, and a static about page.
@@ -86,6 +87,7 @@ src/
     api/                   Route handlers (products, enquiries, options, auth, uploads)
     products/               Public product listing & detail pages
     custom-product/         Custom controller enquiry page
+    networks/                Public dealer/distributor directory page
   components/              UI components (forms, browsers/filters, admin tools)
   components/ui/           Base UI-driven design system primitives
   lib/                      Data access (Postgres), auth, mail, option/field config, Supabase client
