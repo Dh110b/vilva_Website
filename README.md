@@ -1,6 +1,6 @@
 # Vilva
 
-Product showcase and enquiry site for **Vilva**, a MicroComputer Automatic Water Level Controller brand. Built with Next.js (App Router), Tailwind CSS, and Base UI, backed by Supabase (Postgres + Storage) — deployable to serverless hosts like Vercel.
+Product showcase and enquiry site for **Vilva**, a MicroComputer Automatic Water Level Controller brand, by Manjushree Enterprises. Built with Next.js (App Router), Tailwind CSS, and Base UI, backed by Supabase (Postgres + Storage) — deployable to serverless hosts like Vercel.
 
 ## Features
 
