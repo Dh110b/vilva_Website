@@ -2,6 +2,7 @@ import Image from "next/image";
 import { StarRating } from "@/components/ui/star-rating";
 import { Badge } from "@/components/ui/badge";
 import { ReviewReplyForm } from "@/components/review-reply-form";
+import { ReviewDeleteButton } from "@/components/review-delete-button";
 import type { Review } from "@/lib/data";
 
 function formatDate(iso: string) {
@@ -72,8 +73,9 @@ export function ReviewList({
             </div>
           )}
 
-          <div className="mt-3 ml-4">
+          <div className="mt-3 ml-4 flex items-start gap-4">
             <ReviewReplyForm reviewId={review.id} isAuthed={isAuthed} />
+            {isAuthed && <ReviewDeleteButton reviewId={review.id} />}
           </div>
         </div>
       ))}
