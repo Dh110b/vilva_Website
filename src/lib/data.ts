@@ -345,6 +345,13 @@ export async function createReview(
   };
 }
 
+export async function deleteReview(reviewId: string): Promise<boolean> {
+  const rows = await sql`
+    delete from reviews where id = ${reviewId} returning id
+  `;
+  return rows.length > 0;
+}
+
 export async function addReviewReply(
   reviewId: string,
   input: Omit<ReviewReply, "id" | "createdAt">
