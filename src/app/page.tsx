@@ -49,6 +49,28 @@ export default async function Home() {
         </ScrollVelocityRow>
       </section>
 
+      {featuredProducts.length > 0 && (
+        <section className="container mx-auto px-4 py-10">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold">Featured Products</h2>
+            <Button variant="ghost" render={<Link href="/products" />} nativeButton={false}>
+              View all <ArrowRightIcon className="size-4 ms-1" />
+            </Button>
+          </div>
+
+          <ElasticGallery
+            items={featuredProducts.map((product) => ({
+              id: product.id,
+              title: product.name,
+              category: `₹${product.price.toLocaleString("en-IN")}`,
+              src: product.images[0] ?? "",
+              alt: product.name,
+              href: `/products/${product.id}`,
+            }))}
+          />
+        </section>
+      )}
+
       <section className="border-y bg-muted/40">
         <div className="container mx-auto flex flex-wrap items-center justify-center gap-x-8 gap-y-3 px-4 py-4 text-sm font-medium">
           {trustItems.map((item) => (
@@ -103,28 +125,6 @@ export default async function Home() {
           </div>
         </div>
       </section>
-
-      {featuredProducts.length > 0 && (
-        <section className="container mx-auto px-4 py-10">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold">Featured Products</h2>
-            <Button variant="ghost" render={<Link href="/products" />} nativeButton={false}>
-              View all <ArrowRightIcon className="size-4 ms-1" />
-            </Button>
-          </div>
-
-          <ElasticGallery
-            items={featuredProducts.map((product) => ({
-              id: product.id,
-              title: product.name,
-              category: `₹${product.price.toLocaleString("en-IN")}`,
-              src: product.images[0] ?? "",
-              alt: product.name,
-              href: `/products/${product.id}`,
-            }))}
-          />
-        </section>
-      )}
     </div>
   );
 }
