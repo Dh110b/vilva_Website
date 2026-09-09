@@ -40,7 +40,13 @@ export default async function CustomProductPage({
 }) {
   const { type } = await searchParams;
   const productTypes = await getProductTypes();
-  const selected = productTypes.find((t) => t.name === type);
+  // "Other" is a catch-all that isn't in the managed product-type list — it
+  // falls back to the default custom product enquiry (no type-specific fields).
+  const OTHER_TYPE = "Other";
+  const selected =
+    type === OTHER_TYPE
+      ? { name: OTHER_TYPE, isExtraEnquiry: false }
+      : productTypes.find((t) => t.name === type);
 
   return (
     <div className="container mx-auto px-4 py-10">
@@ -74,6 +80,16 @@ export default async function CustomProductPage({
                 <p className="font-medium">{t.name}</p>
               </Link>
             ))}
+            <Link
+              key={OTHER_TYPE}
+              href={`/custom-product?type=${encodeURIComponent(OTHER_TYPE)}`}
+              className="rounded-lg border border-foreground/25 bg-white/10 p-5 shadow-sm backdrop-blur-md transition-colors hover:border-foreground/50 dark:border-white/20 dark:bg-white/5"
+            >
+              <p className="font-medium">Other products</p>
+              <p className="text-muted-foreground text-sm mt-1">
+                Something else — describe what you need and we&apos;ll design it.
+              </p>
+            </Link>
           </div>
         </div>
       ) : (
